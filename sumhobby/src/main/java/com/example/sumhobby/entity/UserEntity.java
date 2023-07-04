@@ -41,28 +41,28 @@ public class UserEntity {
 	private Integer teacher;
 	
 	//사용자가 구독한 강의
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
 	private List<SubscribeEntity> subscribes;
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "userRef")
 	@EqualsAndHashCode.Exclude
 	private List<QuestionEntity> questions;
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "userRef")
 	@EqualsAndHashCode.Exclude
 	private List<ReviewEntity> reviews;
 	
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
 	private List<InquiryEntity> inquiries;
 	
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
 	private List<CartEntity> carts;
 	
 	//사용자가 강사로 등록된 강의
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "userRef")
 	@EqualsAndHashCode.Exclude
 	private List<ClassEntity> classes;
 

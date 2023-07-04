@@ -38,15 +38,15 @@ public class QuestionEntity {
 	private Timestamp quesDate, quesAnsDate;
 	
 	@ManyToOne
-	@JoinColumn(name = "user_tk", referencedColumnName = "user_tk")
+	@JoinColumn(name = "userTk", referencedColumnName = "userTk")
 	private UserEntity userRef;
 	
 	@ManyToOne
-	@JoinColumn(name = "class_num", referencedColumnName = "class_num")
+	@JoinColumn(name = "classNum", referencedColumnName = "classNum")
 	private ClassEntity classRef;
 
 	@ManyToOne
-	@JoinColumn(name = "lec_num", referencedColumnName = "lec_num")
+	@JoinColumn(name = "lecNum", referencedColumnName = "lecNum")
 	private LectureEntity lecRef;
 
 }

@@ -1,9 +1,11 @@
 package com.example.sumhobby.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.example.sumhobby.entity.QuestionEntity;
 
-public interface QuestionRepository extends CrudRepository<QuestionEntity, Integer> {
+@Repository
+public interface QuestionRepository extends JpaRepository<QuestionEntity, Integer> {
 
 }

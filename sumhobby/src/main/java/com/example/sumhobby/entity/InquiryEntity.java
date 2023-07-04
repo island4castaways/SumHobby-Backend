@@ -38,7 +38,7 @@ public class InquiryEntity {
 	private Timestamp inqDate, inqAnsDate;
 	
 	@ManyToOne
-	@JoinColumn(name = "user_tk", referencedColumnName = "user_tk")
+	@JoinColumn(name = "userTk", referencedColumnName = "userTk")
 	private UserEntity userRef;
 
 }
