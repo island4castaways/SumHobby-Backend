@@ -45,26 +45,26 @@ public class ClassEntity {
 	private Timestamp classSetDate, classLastDate;
 	
 	@ManyToOne
-	@JoinColumn(name = "user_tk", referencedColumnName = "user_tk")
+	@JoinColumn(name = "userTk", referencedColumnName = "userTk")
 	private UserEntity userRef;
 
-	@OneToMany(mappedBy = "class")
+	@OneToMany(mappedBy = "classRef")
 	@EqualsAndHashCode.Exclude
 	private List<LectureEntity> lectures;
 	
-	@OneToMany(mappedBy = "class")
+	@OneToMany(mappedBy = "classRef")
 	@EqualsAndHashCode.Exclude
-	private List<QuestionEntity> Questions;
+	private List<QuestionEntity> questions;
 
-	@OneToMany(mappedBy = "class")
+	@OneToMany(mappedBy = "classRef")
 	@EqualsAndHashCode.Exclude
 	private List<ReviewEntity> reviews;
 
-	@OneToMany(mappedBy = "class")
+	@OneToMany(mappedBy = "classRef")
 	@EqualsAndHashCode.Exclude
 	private List<SubscribeEntity> subscribes;
 	
-	@OneToMany(mappedBy = "class", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToMany(mappedBy = "classRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
 	private List<CartEntity> carts;
 

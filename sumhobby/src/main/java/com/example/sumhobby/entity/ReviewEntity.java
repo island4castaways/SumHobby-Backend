@@ -39,11 +39,11 @@ public class ReviewEntity {
 	private Timestamp revDate;
 	
 	@ManyToOne
-	@JoinColumn(name = "user_tk", referencedColumnName = "user_tk")
+	@JoinColumn(name = "userTk", referencedColumnName = "userTk")
 	private UserEntity userRef;
 	
 	@ManyToOne
-	@JoinColumn(name = "class_num", referencedColumnName = "class_num")
+	@JoinColumn(name = "classNum", referencedColumnName = "classNum")
 	private ClassEntity classRef;
 
 }

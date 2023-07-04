@@ -37,32 +37,32 @@ public class UserEntity {
 	@Column(unique = true, nullable = false)
 	private String email;
 	
-	// ÀÏ¹Ý »ç¿ëÀÚ 0, °­»ç ½ÅÃ»ÇÑ »óÅÂ = 1, °­»ç·Î º¯°æ ÈÄ = 2
+	// ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ 0, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ = 1, ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ = 2
 	private Integer teacher;
 	
-	//»ç¿ëÀÚ°¡ ±¸µ¶ÇÑ °­ÀÇ
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	//ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	@OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
 	private List<SubscribeEntity> subscribes;
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "userRef")
 	@EqualsAndHashCode.Exclude
 	private List<QuestionEntity> questions;
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "userRef")
 	@EqualsAndHashCode.Exclude
 	private List<ReviewEntity> reviews;
 	
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
 	private List<InquiryEntity> inquiries;
 	
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
 	private List<CartEntity> carts;
 	
-	//»ç¿ëÀÚ°¡ °­»ç·Î µî·ÏµÈ °­ÀÇ
-	@OneToMany(mappedBy = "user")
+	//ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ïµï¿½ ï¿½ï¿½ï¿½ï¿½
+	@OneToMany(mappedBy = "userRef")
 	@EqualsAndHashCode.Exclude
 	private List<ClassEntity> classes;
 

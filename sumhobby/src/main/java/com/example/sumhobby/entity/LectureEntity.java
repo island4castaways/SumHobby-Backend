@@ -38,10 +38,10 @@ public class LectureEntity {
 	private String lecTitle, lecDetail, lecUrl;
 	
 	@ManyToOne
-	@JoinColumn(name = "class_num", referencedColumnName = "class_num")
+	@JoinColumn(name = "classNum", referencedColumnName = "classNum")
 	private ClassEntity classRef;
 	
-	@OneToMany(mappedBy = "lecture", cascade = {CascadeType.ALL}, orphanRemoval = true)
+	@OneToMany(mappedBy = "lecRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
 	private List<QuestionEntity> questions;
 

@@ -1,5 +1,7 @@
 package com.example.sumhobby.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +11,9 @@ import com.example.sumhobby.repository.CartRepository;
 import com.example.sumhobby.repository.ClassRepository;
 import com.example.sumhobby.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class CartService {
 	
@@ -39,6 +44,18 @@ public class CartService {
 //		
 //		return dto;
 //	}
+	
+//	public List<CartEntity> create(final CartEntity entity){
+//		if(entity == null) {
+//			log.warn("Entity cannot be null.");
+//			throw new RuntimeException("Entity cannot be null");
+//		}
+//		
+//		cartRepository.save(entity);
+//		return cartRepository.findById(entity.getCartNum());
+//	}
+//	
+	
 	
 	
 
