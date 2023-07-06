@@ -2,6 +2,7 @@ package com.example.sumhobby.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.sumhobby.dto.CartDTO;
+import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.dto.ResponseDTO;
 import com.example.sumhobby.entity.CartEntity;
 import com.example.sumhobby.service.CartService;
@@ -37,6 +39,26 @@ public class CartController {
 //	public ResponseEntity<?> createCart(@RequestBody CartDTO dto){
 //		
 //	}
+	
+	@GetMapping
+	public ResponseEntity<?> retrieveCartList(){
+		
+		List<CartEntity> entities = service.retrieve();
+		
+		List<CartDTO> dtos = entities.stream().map(CartDTO::new).collect(Collectors.toList());
+		
+		List<ClassDTO> cdtos = new ArrayList<>();
+		
+		for(int i =0; i<dtos.size();i++) {
+			int classNum = dtos.get(i).getClassNum();
+			ClassDTO classdto = new ClassDTO(service.classRetrieve(classNum).get());
+			cdtos.add(classdto);
+		}
+		
+		ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder().data(cdtos).build();
+		
+		return ResponseEntity.ok().body(response);
+	}
 	
 
 }

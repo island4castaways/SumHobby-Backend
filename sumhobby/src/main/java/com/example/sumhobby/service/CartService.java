@@ -1,12 +1,14 @@
 package com.example.sumhobby.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.sumhobby.dto.CartDTO;
 import com.example.sumhobby.entity.CartEntity;
+import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.repository.CartRepository;
 import com.example.sumhobby.repository.ClassRepository;
 import com.example.sumhobby.repository.UserRepository;
@@ -54,7 +56,15 @@ public class CartService {
 //		cartRepository.save(entity);
 //		return cartRepository.findById(entity.getCartNum());
 //	}
-//	
+	
+	public List<CartEntity> retrieve(){
+		return cartRepository.findAll();
+		//나중에 유저로 수정 예정 
+	}
+	
+	public Optional<ClassEntity> classRetrieve(int classNum){
+		return classRepository.findById(classNum);
+	}
 	
 	
 	
