@@ -1,6 +1,7 @@
 package com.example.sumhobby.dto;
 
 import com.example.sumhobby.entity.CartEntity;
+import com.example.sumhobby.entity.ClassEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,7 @@ public class CartDTO {
 	
 	private int cartNum, classNum;
 	private String userTk;
+	private ClassEntity classEntity;
 	
 	public CartDTO(final CartEntity entity) {
 		this.cartNum = entity.getCartNum();
