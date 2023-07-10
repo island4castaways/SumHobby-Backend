@@ -12,7 +12,7 @@ public class Util {
 	
 	public static Timestamp stringToTimestamp(String strDate) {
 		try {
-			DateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			Date date = format.parse(strDate);
 			Timestamp timestamp = new Timestamp(date.getTime());
 			
@@ -26,10 +26,11 @@ public class Util {
 	
 	public static String timestampToString(Timestamp timestamp) {
 		try {
-			DateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date date = format.parse(timestamp.toString());
+			String str = new SimpleDateFormat("yyyy-MM-dd").format(date);
 			
-			return date.toString();
+			return str;
 		} catch (Exception e) {
 			log.info(e.getMessage());
 			
