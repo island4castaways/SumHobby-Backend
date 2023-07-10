@@ -65,5 +65,5 @@ public class UserEntity {
 	@OneToMany(mappedBy = "userRef")
 	@EqualsAndHashCode.Exclude
 	private List<ClassEntity> classes;
-
+	
 }
