@@ -28,50 +28,52 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "user")
 public class UserEntity {
-	
-	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid")
-	private String userTk;
-	
-	@Column(unique = true, nullable = false)
-	private String userId;
-	
-	@Column(nullable = false)
-	private String password, userName, phone;
-	
-	@Column(unique = true, nullable = false)
-	private String email;
-	
-	// �Ϲ� ����� 0, ���� ��û�� ���� = 1, ����� ���� �� = 2
-	@ColumnDefault("0")
-	@Builder.Default
-	private Integer teacher = 0;
-	
-	//����ڰ� ������ ����
-	@OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	@EqualsAndHashCode.Exclude
-	private List<SubscribeEntity> subscribes;
-	
-	@OneToMany(mappedBy = "userRef")
-	@EqualsAndHashCode.Exclude
-	private List<QuestionEntity> questions;
-	
-	@OneToMany(mappedBy = "userRef")
-	@EqualsAndHashCode.Exclude
-	private List<ReviewEntity> reviews;
-	
-	@OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	@EqualsAndHashCode.Exclude
-	private List<InquiryEntity> inquiries;
-	
-	@OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
-	@EqualsAndHashCode.Exclude
-	private List<CartEntity> carts;
-	
-	//����ڰ� ����� ��ϵ� ����
-	@OneToMany(mappedBy = "userRef")
-	@EqualsAndHashCode.Exclude
-	private List<ClassEntity> classes;
+   
+   @Id
+   @GeneratedValue(generator = "system-uuid")
+   @GenericGenerator(name = "system-uuid", strategy = "uuid")
+   private String userTk;
+   
+   @Column(unique = true, nullable = false)
+   private String userId;
+   
+   private String password, userName, phone;
+   
+   @Column(unique = true)
+   private String email;
+   
+   //  Ϲ        0,        û        = 1,               = 2
+   @ColumnDefault("\"일반\"")
+   @Builder.Default
+   private String role = "일반";
+   
+   //OAuth에서 사용할 유저 정보 제공자
+   private String authProvider;
+   
+   //    ڰ             
+   @OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
+   @EqualsAndHashCode.Exclude
+   private List<SubscribeEntity> subscribes;
+   
+   @OneToMany(mappedBy = "userRef")
+   @EqualsAndHashCode.Exclude
+   private List<QuestionEntity> questions;
+   
+   @OneToMany(mappedBy = "userRef")
+   @EqualsAndHashCode.Exclude
+   private List<ReviewEntity> reviews;
+   
+   @OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
+   @EqualsAndHashCode.Exclude
+   private List<InquiryEntity> inquiries;
+   
+   @OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
+   @EqualsAndHashCode.Exclude
+   private List<CartEntity> carts;
+   
+   //    ڰ          ϵ      
+   @OneToMany(mappedBy = "userRef")
+   @EqualsAndHashCode.Exclude
+   private List<ClassEntity> classes;
 
 }
