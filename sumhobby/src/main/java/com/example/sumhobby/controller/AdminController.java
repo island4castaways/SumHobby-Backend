@@ -21,20 +21,24 @@ import com.example.sumhobby.dto.UserDTO;
 import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.LectureEntity;
 import com.example.sumhobby.entity.UserEntity;
+import com.example.sumhobby.security.TokenProvider;
 import com.example.sumhobby.service.AdminService;
 import com.example.sumhobby.service.ClassService;
 import com.example.sumhobby.service.LectureService;
 import com.example.sumhobby.service.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
 	
 	@Autowired
-	private AdminService admService;
+	private UserService userService;
 	
 	@Autowired
-	private UserService userService;
+	private TokenProvider tokenProvider;
 	
 	@Autowired
 	private ClassService classService;
@@ -42,9 +46,23 @@ public class AdminController {
 	@Autowired
 	private LectureService lecService;
 	
-	@PostMapping("/")
-	public void login() {
-		
+	@PostMapping("/signin")
+	public ResponseEntity<?> signin(@RequestBody UserDTO userDTO) {
+		UserEntity entity = userService.getByCredentials(userDTO.getUserId(), userDTO.getPassword());
+		if(entity != null) {
+			final String token = tokenProvider.create(entity);
+			final UserDTO dto = UserDTO.builder()
+					.userId(entity.getUserId())
+					.userTk(entity.getUserTk())
+					.userName(entity.getUserName())
+					.token(token)
+					.role(entity.getRole())
+					.build();
+			return ResponseEntity.ok().body(dto);
+		} else {
+			ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder().error("Login Failed.").build();
+			return ResponseEntity.badRequest().body(response);
+		}
 	}
 	
 	@GetMapping("/users")
@@ -59,12 +77,12 @@ public class AdminController {
 	@PutMapping("/users")
 	public ResponseEntity<?> approveTeacher(@RequestBody UserDTO userDTO) {
 		UserEntity entity = userService.selectOne(userDTO.getUserTk());
-		if(entity.getTeacher() == 0 || entity.getTeacher() == 1) {
-			entity.setTeacher(2);			
-		} else if(entity.getTeacher() == 2) {
-			entity.setTeacher(0);
+		if(entity.getRole().equals("일반") || entity.getRole().equals("강사 신청")) {
+			entity.setRole("강사");			
+		} else if(entity.getRole().equals("강사")) {
+			entity.setRole("일반");
 		}
-		userService.create(entity);
+		UserEntity updated = userService.update(entity);
 		return getUsers();
 	}
 	

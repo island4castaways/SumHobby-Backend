@@ -42,7 +42,7 @@ public class UserEntity {
    @Column(unique = true)
    private String email;
    
-   //  Ϲ        0,        û        = 1,               = 2
+   //분류 : 일반, 강사 신청, 강사, 관리자
    @ColumnDefault("\"일반\"")
    @Builder.Default
    private String role = "일반";
@@ -50,7 +50,6 @@ public class UserEntity {
    //OAuth에서 사용할 유저 정보 제공자
    private String authProvider;
    
-   //    ڰ             
    @OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
    @EqualsAndHashCode.Exclude
    private List<SubscribeEntity> subscribes;
@@ -71,7 +70,6 @@ public class UserEntity {
    @EqualsAndHashCode.Exclude
    private List<CartEntity> carts;
    
-   //    ڰ          ϵ      
    @OneToMany(mappedBy = "userRef")
    @EqualsAndHashCode.Exclude
    private List<ClassEntity> classes;

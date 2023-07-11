@@ -85,5 +85,16 @@ public class RepositoryTest {
 			le.save(entity);
 		});
 	}
+	
+	@Test
+	public void testInsertAdmin() {
+		UserEntity entity = UserEntity.builder()
+				.userId("sumhobbyadmin")
+				.password("sumhobby230714")
+				.userName("administor")
+				.role("관리자")
+				.build();
+		us.save(entity);
+	}
 
 }
