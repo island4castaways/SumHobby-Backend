@@ -17,5 +17,9 @@ public class ClassService {
 	public List<ClassEntity> selectAll() {
 		return classRepository.findAll();
 	}
+	
+	public ClassEntity create(final ClassEntity entity) {
+		return classRepository.save(entity);
+	}
 
 }

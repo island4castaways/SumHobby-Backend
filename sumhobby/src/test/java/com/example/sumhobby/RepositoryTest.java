@@ -12,8 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.entity.ClassEntity;
+import com.example.sumhobby.entity.LectureEntity;
 import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.repository.ClassRepository;
+import com.example.sumhobby.repository.LectureRepository;
 import com.example.sumhobby.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,9 @@ public class RepositoryTest {
 	
 	@Autowired
 	ClassRepository cl;
+	
+	@Autowired
+	LectureRepository le;
 	
 	@Test
 	public void testInsertUsers() {
@@ -65,6 +70,19 @@ public class RepositoryTest {
 		List<ClassDTO> dtos = entities.stream().map(ClassDTO::new).collect(Collectors.toList());
 		dtos.stream().forEach(dto -> {
 			log.info(dto.getClassSetDate());
+		});
+	}
+	
+	@Test
+	public void testInsertLectures() {
+		IntStream.rangeClosed(0, 19).forEach(i -> {
+			LectureEntity entity = LectureEntity.builder()
+					.classRef(cl.findById(1).get())
+					.lecTitle("testLecture" + i)
+					.lecDetail("testLecture" + i + " Detail")
+					.lecUrl("#")
+					.build();
+			le.save(entity);
 		});
 	}
 

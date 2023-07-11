@@ -18,12 +18,16 @@ public class UserService {
 		return userRepository.findAll();
 	}
 	
-	public UserEntity saveOne(final UserEntity entity) {
+	public UserEntity create(final UserEntity entity) {
 		return userRepository.save(entity);
 	}
 	
 	public UserEntity selectOne(String userTk) {
 		return userRepository.findById(userTk).get();
+	}
+	
+	public UserEntity selectOneByUserId(String userId) {
+		return userRepository.findByUserId(userId);
 	}
 
 }
