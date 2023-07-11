@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.example.sumhobby.dto.ResponseDTO;
 
@@ -26,7 +27,7 @@ import java.util.List;
 public class PaymentController {
 
     @GetMapping(value = "/success")
-    public ResponseEntity<?> paymentResult(
+    public RedirectView paymentResult(
             Model model,
             @RequestParam(value = "orderId") String orderId,
             @RequestParam(value = "amount") Integer amount,
@@ -64,6 +65,7 @@ public class PaymentController {
         responseStream.close();
         model.addAttribute("responseStr", jsonObject.toJSONString());
         System.out.println(jsonObject.toJSONString());
+        System.out.println(authorizations);
 
         model.addAttribute("method", (String) jsonObject.get("method"));
         model.addAttribute("orderName", (String) jsonObject.get("orderName"));
@@ -83,12 +85,13 @@ public class PaymentController {
             model.addAttribute("message", (String) jsonObject.get("message"));
         }
         
-        String str = "success";
-		List<String> list = new ArrayList<String>();
-		list.add(str);
-		ResponseDTO<String> response = ResponseDTO.<String>builder().data(list).build();
-
-        return ResponseEntity.ok().body(response);
+        System.out.println(model.toString());
+        System.out.println(connection.toString());
+       
+		RedirectView redirectView = new RedirectView();
+        redirectView.setUrl("http://localhost:3000/success?amount=" + amount+"&orderId=" + orderId+"&paymentKey="+paymentKey);
+        return redirectView;
+        
     }
 
     @GetMapping(value = "/fail")
