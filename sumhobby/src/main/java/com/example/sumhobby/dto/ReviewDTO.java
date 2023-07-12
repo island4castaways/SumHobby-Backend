@@ -21,21 +21,21 @@ public class ReviewDTO {
 	
 	private int revNum, classNum;
 	private double revRate;
-	private String revContent, userTk;
+	private String revContent, userId, className;
 	private Timestamp revDate;
 	
 	public ReviewDTO(final ReviewEntity entity) {
 		this.revNum = entity.getRevNum();
-		this.classNum = entity.getClassRef().getClassNum();
+//		this.className = entity.getClassRef().getClassName();
 		this.revRate = entity.getRevRate();
 		this.revContent = entity.getRevContent();
-		this.userTk = entity.getUserRef().getUserTk();
+//		this.userId = entity.getUserRef().getUserId();
 	}
-	public static ReviewEntity toEntity(final ReviewDTO dto,ClassRepository classRepository,UserRepository userRepository) {
+	public static ReviewEntity toEntity(final ReviewDTO dto,ClassRepository classrep,UserRepository userrep) {
 		return ReviewEntity.builder()
 				.revNum(dto.getRevNum())
-				.classRef(classRepository.findById(dto.classNum).get())
-				.userRef(userRepository.findById(dto.userTk).get())
+				.classRef(classrep.findById(dto.classNum).get())
+				.userRef(userrep.findByUserId(dto.userId))
 				.revDate(dto.getRevDate())
 				.revRate(dto.getRevRate())
 				.revContent(dto.getRevContent())
