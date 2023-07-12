@@ -12,15 +12,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.example.sumhobby.dto.PaymentDTO;
 import com.example.sumhobby.dto.ResponseDTO;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value="/checkout")
@@ -29,9 +33,11 @@ public class PaymentController {
     @GetMapping(value = "/success")
     public RedirectView paymentResult(
             Model model,
+            PaymentDTO paymentDTO,
             @RequestParam(value = "orderId") String orderId,
             @RequestParam(value = "amount") Integer amount,
-            @RequestParam(value = "paymentKey") String paymentKey) throws Exception {
+            @RequestParam(value = "paymentKey") String paymentKey,
+            ) throws Exception {
 
         String secretKey = "test_sk_4vZnjEJeQVxXaL051vbVPmOoBN0k:";
 
@@ -49,10 +55,13 @@ public class PaymentController {
         JSONObject obj = new JSONObject();
         obj.put("orderId", orderId);
         obj.put("amount", amount);
-
+        
+        
+        
         OutputStream outputStream = connection.getOutputStream();
         outputStream.write(obj.toString().getBytes("UTF-8"));
 
+        String message = connection.getResponseMessage();
         int code = connection.getResponseCode();
         boolean isSuccess = code == 200 ? true : false;
         model.addAttribute("isSuccess", isSuccess);
@@ -85,8 +94,14 @@ public class PaymentController {
             model.addAttribute("message", (String) jsonObject.get("message"));
         }
         
+//        Map<String, List<String>> properties = connection.getRequestProperties();
         System.out.println(model.toString());
-        System.out.println(connection.toString());
+        System.out.println(paymentDTO.toString());
+        System.out.println(code);
+        System.out.println(message);
+//        System.out.println(properties.toString());
+        
+//        HttpResponse<String> response = HttpClient.newHttpClient().send(, HttpResponse.BodyHandlers.ofString());
        
 		RedirectView redirectView = new RedirectView();
         redirectView.setUrl("http://localhost:3000/success?amount=" + amount+"&orderId=" + orderId+"&paymentKey="+paymentKey);
