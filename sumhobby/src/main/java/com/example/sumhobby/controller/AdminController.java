@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -44,6 +46,8 @@ public class AdminController {
 	@Autowired
 	private TokenProvider tokenProvider;
 	
+	private PasswordEncoder pwEncoder = new BCryptPasswordEncoder();
+	
 	@Autowired
 	private ClassService classService;
 	
@@ -55,7 +59,9 @@ public class AdminController {
 	
 	@PostMapping("/signin")
 	public ResponseEntity<?> signin(@RequestBody UserDTO userDTO) {
-		UserEntity entity = userService.getByCredentials(userDTO.getUserId(), userDTO.getPassword());
+		UserEntity entity = userService.getByCredentials(
+				userDTO.getUserId(), userDTO.getPassword(), pwEncoder
+		);
 		if(entity != null) {
 			final String token = tokenProvider.create(entity);
 			final UserDTO dto = UserDTO.builder()
@@ -95,7 +101,7 @@ public class AdminController {
 	
 	@GetMapping("/classes")
 	public ResponseEntity<?> getClasses() {
-		List<ClassEntity> entities = classService.selectAll();
+		List<ClassEntity> entities = classService.retrieve();
 		List<ClassDTO> dtos = entities.stream().map(ClassDTO::new).collect(Collectors.toList());
 		ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder()
 				.data(dtos).build();

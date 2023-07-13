@@ -25,14 +25,6 @@ public class LectureDTO {
 		this.lecDetail = entity.getLecDetail();
 		this.lecUrl = entity.getLecUrl();
 	}
-
-	public LectureDTO(final LectureEntity entity) {
-		this.lecNum = entity.getLecNum();
-		this.lecTitle = entity.getLecTitle();
-		this.lecDetail = entity.getLecDetail();
-		this.lecUrl = entity.getLecUrl();
-		this.classNum = entity.getClassRef().getClassNum();
-	}
 	
 	public static LectureEntity toEntity(final LectureDTO dto,ClassRepository classRepository) {
 		return LectureEntity.builder()
