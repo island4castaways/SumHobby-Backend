@@ -21,11 +21,23 @@ public class ClassService {
 		return classRepository.findAll();
 	}
 	
+	public ClassEntity create(final ClassEntity entity) {
+		return classRepository.save(entity);
+	}
+	
+	public ClassEntity selectOne(final Integer classNum) {
+		return classRepository.findById(classNum).get();
+	}
+	
+	public void deleteOne(final ClassEntity entity) {
+		classRepository.delete(entity);
+	}
+
 	public List<ClassEntity> getTopRatedClassesByCategory() {
 	    List<String> categories = classRepository.findAllCategories();
 	    List<ClassEntity> topRatedClassesByCategory = new ArrayList<>();
 
-	    for (String category : categories) {
+	    for(String category : categories) {
 	        List<ClassEntity> topRatedClasses = classRepository.findTop5ByClassCategoryOrderByClassRateDesc(category);
 	        topRatedClassesByCategory.addAll(topRatedClasses);
 	    }

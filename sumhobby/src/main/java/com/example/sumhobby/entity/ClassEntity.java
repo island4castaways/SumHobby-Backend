@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -36,12 +38,13 @@ public class ClassEntity {
 	
 	@Column(nullable = false)
 	private String classDetail, classCategory;
-	
+
 	@Column(unique = true,nullable = false)
 	private String className;
 	
-	//º°Á¡
-	private double classRate;
+	@ColumnDefault("0.0")
+	@Builder.Default
+	private double classRate = 0.0;
 	
 	@Column(nullable = false)
 	private int classPrice;

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.LectureEntity;
 import com.example.sumhobby.entity.SubscribeEntity;
 import com.example.sumhobby.repository.ClassRepository;
@@ -26,11 +27,27 @@ public class LectureService {
 	@Autowired
 	private ClassRepository classRepository;
 	
+	public List<LectureEntity> selectAllByClassRef(final ClassEntity classEntity) {
+		return lecRepository.findByClassRef(classEntity);
+	}
+	
+	public LectureEntity selectOne(final Integer lecNum) {
+		return lecRepository.findById(lecNum).get();
+	}
+	
+	public LectureEntity create(final LectureEntity entity) {
+		return lecRepository.save(entity);
+	}
+	
+	public void deleteOne(final LectureEntity entity) {
+		lecRepository.delete(entity);
+	}
+		
 	public List<LectureEntity> retrive(){
 		return lecRepository.findAll();
 	}
 	
-	//±¸¸ÅÇÑ »ç¶÷ÀÎÁö È®ÀÎÇÏ´Â serviceÀÛ¼º
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï´ï¿½ serviceï¿½Û¼ï¿½
 //	public List<SubscribeEntity> getFindByAllSub(){
 //		return lecRepository.findBy
 //	}
