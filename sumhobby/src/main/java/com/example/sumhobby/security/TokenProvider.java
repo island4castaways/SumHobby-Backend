@@ -23,6 +23,7 @@ public class TokenProvider {
 		// 기한 지금으로부터 1일
 		Date expiryDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
 
+		// JWT Token 생성
 		return Jwts.builder()
 				.signWith(SignatureAlgorithm.HS512, SECRET_KEY)
 				.setSubject(userEntity.getUserTk())
