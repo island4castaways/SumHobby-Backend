@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.ReviewEntity;
 import com.example.sumhobby.entity.UserEntity;
 
@@ -17,4 +18,6 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
 	
 	@Query("SELECT r FROM ReviewEntity r WHERE r.classRef.classNum = :classId")
     List<ReviewEntity> findByClassId(Integer classId);
+	
+	List<ReviewEntity> findByClassRef(ClassEntity classEntity);
 }

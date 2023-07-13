@@ -25,28 +25,30 @@ public class ReviewService {
 	@Autowired
 	private ReviewRepository revRepository;
 	
-	@Autowired
-	private UserRepository userRepository;
+//	@Autowired
+//	private UserRepository userRepository;
 	
-	@Autowired
-	private ClassRepository classRepository;
+//	@Autowired
+//	private ClassRepository classRepository;
 
-	public List<ReviewEntity> retrieve(){
-		return revRepository.findAll();
+	public ReviewEntity selectOne(final Integer revNum){
+		return revRepository.findById(revNum).get();
 	}
 	
-	public ClassEntity classRetrieve(int classNum){
-		return classRepository.findById(classNum).get();
+//	public ClassEntity classRetrieve(int classNum){
+//		return classRepository.findById(classNum).get();
+//	}
+	
+	public List<ReviewEntity> selectByClassRef(ClassEntity classEntity) {
+		return revRepository.findByClassRef(classEntity);
 	}
 	
-	public List<ReviewEntity> create(ReviewEntity reviewEntity) {
+	public ReviewEntity create(ReviewEntity reviewEntity) {
 	    if (reviewEntity == null) {
 	        log.warn("Entity cannot be null");
 	        throw new RuntimeException("Entity cannot be null");
 	    }
-	    revRepository.save(reviewEntity);
-	    return revRepository.findAll();
-	    
+	    return revRepository.save(reviewEntity);
 	}
 
 	
@@ -54,9 +56,9 @@ public class ReviewService {
 //		return lectureRepository.findById(lectureNum);
 //	}
 
-	public ReviewEntity toEntity(ReviewDTO revDTO) {
-		return ReviewDTO.toEntity(revDTO,classRepository,userRepository);
-	}
+//	public ReviewEntity toEntity(ReviewDTO revDTO) {
+//		return ReviewDTO.toEntity(revDTO,classRepository,userRepository);
+//	}
 
 	public List<ReviewEntity> findByClassId(Integer classId) {
 		return revRepository.findByClassId(classId);

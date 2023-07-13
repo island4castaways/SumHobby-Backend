@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class ClassDTO {
 	
 	private int classNum, classPrice;
-	private String className, classDetail, classCategory, classSetDate, classLastDate, userId;
+	private String className, classDetail, classCategory, classImg, classSetDate, classLastDate, userId;
 	private double classRate;
 	
 	public ClassDTO(final ClassEntity entity) {
@@ -27,6 +27,7 @@ public class ClassDTO {
 		this.className = entity.getClassName();
 		this.classDetail = entity.getClassDetail();
 		this.classCategory = entity.getClassCategory();
+		this.classImg = entity.getClassImg();
 		this.classSetDate = Util.timestampToString(entity.getClassSetDate());
 		this.classLastDate = Util.timestampToString(entity.getClassLastDate());
 		this.userId = entity.getUserRef().getUserId();

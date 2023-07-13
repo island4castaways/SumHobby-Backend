@@ -42,6 +42,8 @@ public class ClassEntity {
 	@Column(unique = true,nullable = false)
 	private String className;
 	
+	private String classImg;
+	
 	@ColumnDefault("0.0")
 	@Builder.Default
 	private double classRate = 0.0;
