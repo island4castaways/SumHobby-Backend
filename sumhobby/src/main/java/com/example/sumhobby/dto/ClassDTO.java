@@ -2,6 +2,8 @@ package com.example.sumhobby.dto;
 
 import com.example.sumhobby.entity.CartEntity;
 import com.example.sumhobby.entity.ClassEntity;
+import com.example.sumhobby.repository.ClassRepository;
+import com.example.sumhobby.repository.UserRepository;
 import com.example.sumhobby.util.Util;
 
 import lombok.AllArgsConstructor;
@@ -29,6 +31,18 @@ public class ClassDTO {
 		this.classLastDate = Util.timestampToString(entity.getClassLastDate());
 		this.userId = entity.getUserRef().getUserId();
 		this.classRate = entity.getClassRate();
+	}
+	
+	public static ClassEntity toEntity(final ClassDTO dto, ClassRepository classRepository, UserRepository userRepository) {
+		return ClassEntity.builder()
+				.classNum(dto.getClassNum())
+				.classPrice(dto.getClassPrice())
+				.className(dto.getClassName())
+				.classDetail(dto.getClassDetail())
+				.classCategory(dto.getClassCategory())
+				.classRate(dto.getClassRate())
+				.userRef(userRepository.findByUserId(dto.userId))
+				.build();
 	}
 
 }

@@ -21,15 +21,16 @@ public class ClassService {
 		return classRepository.findAll();
 	}
 	
-	public List<ClassDTO> getTopRatedClassesByCategory() {
+	public List<ClassEntity> getTopRatedClassesByCategory() {
 	    List<String> categories = classRepository.findAllCategories();
-	    List<ClassDTO> topRatedClassesByCategory = new ArrayList<>();
+	    List<ClassEntity> topRatedClassesByCategory = new ArrayList<>();
 
 	    for (String category : categories) {
 	        List<ClassEntity> topRatedClasses = classRepository.findTop5ByClassCategoryOrderByClassRateDesc(category);
-	        topRatedClassesByCategory.addAll(topRatedClasses.stream().map(ClassDTO::new).collect(Collectors.toList()));
+	        topRatedClassesByCategory.addAll(topRatedClasses);
 	    }
 
 	    return topRatedClassesByCategory;
 	}
+
 }

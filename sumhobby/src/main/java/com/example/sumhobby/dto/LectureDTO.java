@@ -29,6 +29,9 @@ public class LectureDTO {
 	public static LectureEntity toEntity(final LectureDTO dto,ClassRepository classRepository) {
 		return LectureEntity.builder()
 				.lecNum(dto.getLecNum())
+				.lecTitle(dto.getLecTitle())
+				.lecDetail(dto.getLecDetail())
+				.lecUrl(dto.getLecUrl())
 				.classRef(classRepository.findById(dto.classNum).get())
 				.build();		
 	}

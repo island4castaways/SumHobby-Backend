@@ -34,15 +34,16 @@ public class ClassController {
 	}
 	
 	@GetMapping("/top-rated")
-	public ResponseEntity<List<ClassDTO>> getTopRatedClassesByCategory() {
-		List<ClassDTO> topRatedClasses = classService.getTopRatedClassesByCategory();
-		if (topRatedClasses.isEmpty()) {
-			return ResponseEntity.noContent().build();
-		} else {
-			return ResponseEntity.ok(topRatedClasses);
+	public ResponseEntity<?> getTopRatedClassesByCategory() {
+		
+		List<ClassEntity> topRatedClasses = classService.getTopRatedClassesByCategory();
+		
+		List<ClassDTO> dtos = topRatedClasses.stream().map(ClassDTO::new).collect(Collectors.toList());
+		//List<ClassDTO> topRatedClasses = classService.getTopRatedClassesByCategory();
+		
+		ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder().data(dtos).build();
+		
+		return ResponseEntity.ok().body(response);
+			
 		}
 	}
-	
-
-	
-}
