@@ -2,18 +2,24 @@ package com.example.sumhobby.controller;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.example.sumhobby.dto.PaymentDTO;
+import com.example.sumhobby.dto.PaymentRespDTO;
 import com.example.sumhobby.dto.ResponseDTO;
+import com.example.sumhobby.entity.PaymentEntity;
+import com.example.sumhobby.service.PaymentService;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -25,19 +31,27 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping(value="/checkout")
+@RequestMapping("/checkout")
 public class PaymentController {
-
+	
+	@Autowired
+	private PaymentService service;
+	
+	PaymentRespDTO paymentRespDTO = new PaymentRespDTO();
+	
     @GetMapping(value = "/success")
     public RedirectView paymentResult(
             Model model,
-            PaymentDTO paymentDTO,
             @RequestParam(value = "orderId") String orderId,
             @RequestParam(value = "amount") Integer amount,
-            @RequestParam(value = "paymentKey") String paymentKey,
+            @RequestParam(value = "paymentKey") String paymentKey
             ) throws Exception {
+    	paymentRespDTO.setAmount(amount);
+    	paymentRespDTO.setOrderId(orderId);
+    	paymentRespDTO.setPaymentKey(paymentKey);
 
         String secretKey = "test_sk_4vZnjEJeQVxXaL051vbVPmOoBN0k:";
 
@@ -78,7 +92,9 @@ public class PaymentController {
 
         model.addAttribute("method", (String) jsonObject.get("method"));
         model.addAttribute("orderName", (String) jsonObject.get("orderName"));
-
+        paymentRespDTO.setOrderName((String) jsonObject.get("orderName"));
+        paymentRespDTO.setRequestedAt((String) jsonObject.get("requestedAt"));
+        
         if (((String) jsonObject.get("method")) != null) {
             if (((String) jsonObject.get("method")).equals("카드")) {
                 model.addAttribute("cardNumber", (String) ((JSONObject) jsonObject.get("card")).get("number"));
@@ -96,13 +112,14 @@ public class PaymentController {
         
 //        Map<String, List<String>> properties = connection.getRequestProperties();
         System.out.println(model.toString());
-        System.out.println(paymentDTO.toString());
         System.out.println(code);
         System.out.println(message);
+        System.out.println(paymentRespDTO);
 //        System.out.println(properties.toString());
         
 //        HttpResponse<String> response = HttpClient.newHttpClient().send(, HttpResponse.BodyHandlers.ofString());
        
+        
 		RedirectView redirectView = new RedirectView();
         redirectView.setUrl("http://localhost:3000/success?amount=" + amount+"&orderId=" + orderId+"&paymentKey="+paymentKey);
         return redirectView;
@@ -121,5 +138,18 @@ public class PaymentController {
 
         return ResponseEntity.ok().body("fail");
     }
+    
+    @PostMapping
+    public ResponseEntity<?> createPayment(@RequestBody PaymentDTO dto) {
+    	System.out.println(dto.toString());
+    	PaymentEntity entity = service.toEntity(dto);
+    	List<PaymentEntity> entities = service.create(entity);
+    	List<PaymentDTO> dtos = entities.stream().map(PaymentDTO::new).collect(Collectors.toList());
+    	ResponseDTO<PaymentDTO> response = ResponseDTO.<PaymentDTO>builder().data(dtos).build();
+    	
+    	return ResponseEntity.ok().body(response);
+    }
+    
+    
 
 }
