@@ -21,5 +21,13 @@ public class ClassService {
 	public ClassEntity create(final ClassEntity entity) {
 		return classRepository.save(entity);
 	}
+	
+	public ClassEntity selectOne(final Integer classNum) {
+		return classRepository.findById(classNum).get();
+	}
+	
+	public void deleteOne(final ClassEntity entity) {
+		classRepository.delete(entity);
+	}
 
 }

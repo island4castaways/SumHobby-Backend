@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +24,6 @@ import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.LectureEntity;
 import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.security.TokenProvider;
-import com.example.sumhobby.service.AdminService;
 import com.example.sumhobby.service.ClassService;
 import com.example.sumhobby.service.LectureService;
 import com.example.sumhobby.service.UserService;
@@ -117,13 +118,107 @@ public class AdminController {
 		}
 	}
 	
-	@GetMapping("/lectures")
+	@PutMapping("/modifyClass")
+	public ResponseEntity<?> modifyClass(@RequestBody ClassDTO classDTO) {
+		try {
+			ClassEntity entity = classService.selectOne(classDTO.getClassNum());
+			entity.setClassName(classDTO.getClassName());
+			entity.setClassDetail(classDTO.getClassDetail());
+			entity.setClassCategory(classDTO.getClassCategory());
+			entity.setUserRef(userService.selectOneByUserId(classDTO.getUserId()));
+			entity.setClassPrice(classDTO.getClassPrice());
+			entity.setClassLastDate(Timestamp.valueOf(LocalDateTime.now()));
+			classService.create(entity);
+			return getClasses();
+		} catch (Exception e) {
+			String msg = e.getMessage();
+			ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder()
+					.error(msg).build();
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@DeleteMapping("/deleteClass")
+	public ResponseEntity<?> deleteClass(@RequestBody ClassDTO classDTO) {
+		try {
+			ClassEntity entity = classService.selectOne(classDTO.getClassNum());
+			classService.deleteOne(entity);
+			return getClasses();
+		} catch (Exception e) {
+			String msg = e.getMessage();
+			ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder()
+					.error(msg).build();
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@PatchMapping("/lectures")
 	public ResponseEntity<?> getLectures(@RequestBody ClassDTO classDTO) {
-		List<LectureEntity> entities = lecService.selectAll();
+		ClassEntity classEntity = classService.selectOne(classDTO.getClassNum());
+		List<LectureEntity> entities = lecService.selectAllByClassRef(classEntity);
 		List<LectureDTO> dtos = entities.stream().map(LectureDTO::new).collect(Collectors.toList());
 		ResponseDTO<LectureDTO> response = ResponseDTO.<LectureDTO>builder()
 				.data(dtos).build();
 		return ResponseEntity.ok().body(response);
+	}
+	
+	@PostMapping("/createLecture")
+	public ResponseEntity<?> createLecture(@RequestBody LectureDTO lectureDTO) {
+		try {
+			ClassEntity classEntity = classService.selectOne(lectureDTO.getClassNum());
+			LectureEntity entity = LectureEntity.builder()
+					.lecTitle(lectureDTO.getLecTitle())
+					.lecDetail(lectureDTO.getLecDetail())
+					.lecUrl(lectureDTO.getLecUrl())
+					.classRef(classEntity)
+					.build();
+			lecService.create(entity);
+			classEntity.setClassLastDate(Timestamp.valueOf(LocalDateTime.now()));
+			classService.create(classEntity);
+			return getLectures(new ClassDTO(classEntity));
+		} catch (Exception e) {
+			String msg = e.getMessage();
+			ResponseDTO<LectureDTO> response = ResponseDTO.<LectureDTO>builder()
+					.error(msg).build();
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@PutMapping("/modifyLecture")
+	public ResponseEntity<?> modifyLecture(@RequestBody LectureDTO lectureDTO) {
+		try {
+			LectureEntity entity = lecService.selectOne(lectureDTO.getLecNum());
+			entity.setLecTitle(lectureDTO.getLecTitle());
+			entity.setLecDetail(lectureDTO.getLecDetail());
+			entity.setLecUrl(lectureDTO.getLecUrl());
+			lecService.create(entity);
+			ClassEntity classEntity = classService.selectOne(lectureDTO.getClassNum());
+			classEntity.setClassLastDate(Timestamp.valueOf(LocalDateTime.now()));
+			classService.create(classEntity);
+			return getLectures(new ClassDTO(classEntity));
+		} catch (Exception e) {
+			String msg = e.getMessage();
+			ResponseDTO<LectureDTO> response = ResponseDTO.<LectureDTO>builder()
+					.error(msg).build();
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@DeleteMapping("deleteLecture")
+	public ResponseEntity<?> deleteLecture(@RequestBody LectureDTO lectureDTO) {
+		try {
+			LectureEntity entity = lecService.selectOne(lectureDTO.getLecNum());
+			lecService.deleteOne(entity);
+			ClassEntity classEntity = classService.selectOne(lectureDTO.getClassNum());
+			classEntity.setClassLastDate(Timestamp.valueOf(LocalDateTime.now()));
+			classService.create(classEntity);
+			return getLectures(new ClassDTO(classEntity));
+		} catch (Exception e) {
+			String msg = e.getMessage();
+			ResponseDTO<LectureDTO> response = ResponseDTO.<LectureDTO>builder()
+					.error(msg).build();
+			return ResponseEntity.badRequest().body(response);
+		}
 	}
 
 }
