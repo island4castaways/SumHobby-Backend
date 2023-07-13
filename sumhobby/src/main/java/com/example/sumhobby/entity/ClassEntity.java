@@ -37,7 +37,10 @@ public class ClassEntity {
 	private Integer classNum;
 	
 	@Column(nullable = false)
-	private String className, classDetail, classCategory;
+	private String classDetail, classCategory;
+
+	@Column(unique = true,nullable = false)
+	private String className;
 	
 	@ColumnDefault("0.0")
 	@Builder.Default
