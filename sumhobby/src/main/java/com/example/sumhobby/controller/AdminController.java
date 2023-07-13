@@ -60,13 +60,13 @@ public class AdminController {
 		return getUsers();
 	}
 	
-	@GetMapping("classes")
-	public ResponseEntity<?> getClasses() {
-		List<ClassEntity> entities = classService.selectAll();
-		List<ClassDTO> dtos = entities.stream().map(ClassDTO::new).collect(Collectors.toList());
-		ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder()
-				.data(dtos).build();
-		return ResponseEntity.ok().body(response);
-	}
+//	@GetMapping("classes")
+//	public ResponseEntity<?> getClasses() {
+//		List<ClassEntity> entities = classService.;
+//		List<ClassDTO> dtos = entities.stream().map(ClassDTO::new).collect(Collectors.toList());
+//		ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder()
+//				.data(dtos).build();
+//		return ResponseEntity.ok().body(response);
+//	}
 
 }
