@@ -17,14 +17,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.sumhobby.dto.ClassDTO;
+import com.example.sumhobby.dto.InquiryDTO;
 import com.example.sumhobby.dto.LectureDTO;
 import com.example.sumhobby.dto.ResponseDTO;
 import com.example.sumhobby.dto.UserDTO;
 import com.example.sumhobby.entity.ClassEntity;
+import com.example.sumhobby.entity.InquiryEntity;
 import com.example.sumhobby.entity.LectureEntity;
 import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.security.TokenProvider;
 import com.example.sumhobby.service.ClassService;
+import com.example.sumhobby.service.InquiryService;
 import com.example.sumhobby.service.LectureService;
 import com.example.sumhobby.service.UserService;
 
@@ -46,6 +49,9 @@ public class AdminController {
 	
 	@Autowired
 	private LectureService lecService;
+	
+	@Autowired
+	private InquiryService inqService;
 	
 	@PostMapping("/signin")
 	public ResponseEntity<?> signin(@RequestBody UserDTO userDTO) {
@@ -83,7 +89,7 @@ public class AdminController {
 		} else if(entity.getRole().equals("강사")) {
 			entity.setRole("일반");
 		}
-		UserEntity updated = userService.update(entity);
+		userService.update(entity);
 		return getUsers();
 	}
 	
@@ -216,6 +222,56 @@ public class AdminController {
 		} catch (Exception e) {
 			String msg = e.getMessage();
 			ResponseDTO<LectureDTO> response = ResponseDTO.<LectureDTO>builder()
+					.error(msg).build();
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@GetMapping("/inquiries")
+	public ResponseEntity<?> getInquiries() {
+		List<InquiryEntity> entities = inqService.selectAll();
+		List<InquiryDTO> dtos = entities.stream().map(InquiryDTO::new).collect(Collectors.toList());
+		ResponseDTO<InquiryDTO> response = ResponseDTO.<InquiryDTO>builder()
+				.data(dtos).build();
+		return ResponseEntity.ok().body(response);
+	}
+	
+	@PatchMapping("/inquiry")
+	public ResponseEntity<?> getInquiry(@RequestBody InquiryDTO inquiryDTO) {
+		InquiryEntity entity = inqService.selectOne(inquiryDTO.getInqNum());
+		InquiryDTO dto = new InquiryDTO(entity);
+		return ResponseEntity.ok().body(dto);
+	}
+	
+	@PostMapping("/inqAnswer")
+	public ResponseEntity<?> saveInqAnswer(@RequestBody InquiryDTO inquiryDTO) {
+		try {
+			InquiryEntity entity = inqService.selectOne(inquiryDTO.getInqNum());
+			entity.setInqAnswer(inquiryDTO.getInqAnswer());
+			entity.setInqAnsDate(Timestamp.valueOf(LocalDateTime.now()));
+			inqService.create(entity);
+			InquiryDTO dto = new InquiryDTO(entity);
+			return getInquiry(dto);
+		} catch (Exception e) {
+			String msg = e.getMessage();
+			ResponseDTO<InquiryDTO> response = ResponseDTO.<InquiryDTO>builder()
+					.error(msg).build();
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@DeleteMapping("/deleteInqAnswer")
+	public ResponseEntity<?> deleteInqAnswer(@RequestBody InquiryDTO inquiryDTO) {
+		try {
+			InquiryEntity entity = inqService.selectOne(inquiryDTO.getInqNum());
+			entity.setInqAnswer(null);
+			entity.setInqAnsDate(Timestamp.valueOf(LocalDateTime.now()));
+			inqService.create(entity);
+			InquiryDTO dto = new InquiryDTO(entity);
+			return getInquiry(dto);
+		} catch (Exception e) {
+			String msg = e.getMessage();
+			ResponseDTO<InquiryDTO> response = ResponseDTO.<InquiryDTO>builder()
 					.error(msg).build();
 			return ResponseEntity.badRequest().body(response);
 		}

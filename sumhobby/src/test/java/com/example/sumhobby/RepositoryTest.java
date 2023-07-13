@@ -12,9 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.entity.ClassEntity;
+import com.example.sumhobby.entity.InquiryEntity;
 import com.example.sumhobby.entity.LectureEntity;
 import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.repository.ClassRepository;
+import com.example.sumhobby.repository.InquiryRepository;
 import com.example.sumhobby.repository.LectureRepository;
 import com.example.sumhobby.repository.UserRepository;
 
@@ -32,6 +34,9 @@ public class RepositoryTest {
 	
 	@Autowired
 	LectureRepository le;
+	
+	@Autowired
+	InquiryRepository in;
 	
 	@Test
 	public void testInsertUsers() {
@@ -64,14 +69,14 @@ public class RepositoryTest {
 		});
 	}
 	
-	@Test
-	public void testUtil() {
-		List<ClassEntity> entities = cl.findAll();
-		List<ClassDTO> dtos = entities.stream().map(ClassDTO::new).collect(Collectors.toList());
-		dtos.stream().forEach(dto -> {
-			log.info(dto.getClassSetDate());
-		});
-	}
+//	@Test
+//	public void testUtil() {
+//		List<ClassEntity> entities = cl.findAll();
+//		List<ClassDTO> dtos = entities.stream().map(ClassDTO::new).collect(Collectors.toList());
+//		dtos.stream().forEach(dto -> {
+//			log.info(dto.getClassSetDate());
+//		});
+//	}
 	
 	@Test
 	public void testInsertLectures() {
@@ -86,15 +91,27 @@ public class RepositoryTest {
 		});
 	}
 	
+//	@Test
+//	public void testInsertAdmin() {
+//		UserEntity entity = UserEntity.builder()
+//				.userId("sumhobbyadmin")
+//				.password("sumhobby230714")
+//				.userName("administor")
+//				.role("관리자")
+//				.build();
+//		us.save(entity);
+//	}
+	
 	@Test
-	public void testInsertAdmin() {
-		UserEntity entity = UserEntity.builder()
-				.userId("sumhobbyadmin")
-				.password("sumhobby230714")
-				.userName("administor")
-				.role("관리자")
-				.build();
-		us.save(entity);
+	public void testInsertInquiries() {
+		IntStream.rangeClosed(0, 19).forEach(i -> {
+			InquiryEntity entity = InquiryEntity.builder()
+					.inqContent("inquiry" + i)
+					.inqDate(Timestamp.valueOf(LocalDateTime.now()))
+					.userRef(us.findByUserId("testuser" + i))
+					.build();
+			in.save(entity);
+		});
 	}
 
 }
