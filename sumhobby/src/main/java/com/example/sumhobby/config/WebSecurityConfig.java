@@ -31,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeRequests()
-				.antMatchers("/", "/auth/**", "/admin", "/admin/signin").permitAll()
+				.antMatchers("/", "/auth/**", "/admin/signin").permitAll()
 				.anyRequest().authenticated();
 		
 		//filter 등록, 매 요청마다 CorsFilter 실행한 후 jwtAuthenticationFilter 실행함
