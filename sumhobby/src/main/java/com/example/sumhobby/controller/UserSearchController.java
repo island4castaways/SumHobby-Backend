@@ -15,7 +15,7 @@ import com.example.sumhobby.service.UserService;
 
 @RestController
 @RequestMapping("/search")
-public class UserSerchController {
+public class UserSearchController {
 	@Autowired
     private UserService userService;
 

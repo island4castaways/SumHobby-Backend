@@ -11,7 +11,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,16 +92,47 @@ public class UserController {
 		}
 	}
 	
-	
-	@GetMapping("/update")
-	public ResponseEntity<?> Update(@AuthenticationPrincipal String userTk, UserDTO userDTO){
-		UserEntity userEntity = userService.retrieveUser(userTk);
-		userEntity = userService.modify(userEntity, userDTO);
-		List<UserEntity> entities = new ArrayList<UserEntity>();
-		entities.add(userEntity);
-		List<UserDTO> dtos = entities.stream().map(UserDTO::new).collect(Collectors.toList());
-		ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder().data(dtos).build();
-		return ResponseEntity.ok().body(response);
+	@PutMapping("/update")
+	public ResponseEntity<?> modifyUser(@RequestBody UserDTO userDTO) {
+	    try {
+	        UserEntity user = null; // 유저 서비스의 modify 메소드 호출
+	        return ResponseEntity.ok().body(user);
+	    } catch (Exception e) {
+	        String errorMessage = e.getMessage();
+	        ResponseDTO<String> response = ResponseDTO.<String>builder()
+	                .error(errorMessage)
+	                .build();
+	        return ResponseEntity.badRequest().body(response);
+	    }
 	}
+// 유저 정보 수정할 때 정보 가지고와야 해서 필요	
+	@GetMapping("/getuserinfo")
+	public ResponseEntity<?> getUserInfo(@PathVariable String userId) {
+	    try {
+	        UserDTO userDTO = userService.getUserInfo(userId);
+	        return ResponseEntity.ok().body(userDTO);
+	    } catch (Exception e) {
+	        ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+	        return ResponseEntity.badRequest().body(responseDTO);
+	    }
+	}
+
+
+	
+//	@DeleteMapping("/deleteClass")
+//	public ResponseEntity<?> deleteClass(@RequestBody ClassDTO classDTO) {
+//		try {
+//			ClassEntity entity = classService.selectOne(classDTO.getClassNum());
+//			classService.deleteOne(entity);
+//			return getClasses();
+//		} catch (Exception e) {
+//			String msg = e.getMessage();
+//			ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder()
+//					.error(msg).build();
+//			return ResponseEntity.badRequest().body(response);
+//		}
+//	}
+	
+
 
 }
