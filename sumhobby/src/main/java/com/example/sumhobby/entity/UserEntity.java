@@ -73,5 +73,9 @@ public class UserEntity {
    @OneToMany(mappedBy = "userRef")
    @EqualsAndHashCode.Exclude
    private List<ClassEntity> classes;
+   
+   @OneToMany(mappedBy = "userRef")
+   @EqualsAndHashCode.Exclude
+   private List<PaymentEntity> payments;
 
 }
