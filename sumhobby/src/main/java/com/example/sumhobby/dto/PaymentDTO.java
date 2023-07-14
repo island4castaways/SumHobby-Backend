@@ -25,12 +25,12 @@ public class PaymentDTO {
 		this.paymentNum = entity.getPaymentNum();
 	}
 	
-	public static PaymentEntity toEntity(final PaymentDTO dto, ClassRepository classRepository, UserRepository userRepository, final PaymentRespRepository payRespRepository) {
+	public static PaymentEntity toEntity(final PaymentDTO dto, ClassRepository classRepository, UserRepository userRepository) {
 		return PaymentEntity.builder()
 				.paymentNum(dto.getPaymentNum())
 				.classRef(classRepository.findById(dto.classNum).get())
 				.userRef(userRepository.findById(dto.userTk).get())
-				.paymentRespRef(payRespRepository.findById(dto.orderId).get())
+				.orderId(dto.getOrderId())
 				.build();
 	}
 	

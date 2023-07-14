@@ -1,5 +1,6 @@
 package com.example.sumhobby.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,7 +35,6 @@ public class PaymentEntity {
 	@JoinColumn(name = "classNum", referencedColumnName = "classNum")
 	private ClassEntity classRef;
 	
-	@ManyToOne
-	@JoinColumn(name = "orderId", referencedColumnName = "orderId")
-	private PaymentRespEntity paymentRespRef;
+	@Column(unique = true)
+	private String orderId;
 }

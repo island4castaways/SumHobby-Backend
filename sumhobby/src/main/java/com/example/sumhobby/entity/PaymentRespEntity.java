@@ -36,10 +36,7 @@ public class PaymentRespEntity {
 	//시간 - Timestamp로 할 수 있을지 모르겠음 출력값: 2023-07-13T21:16:56+09:00
 	
 	private Boolean isSuccessful;
-	
-	@OneToMany(mappedBy = "paymentRespRef")
-	@EqualsAndHashCode.Exclude
-	private List<PaymentEntity> payments;
+
 	
 	
 }

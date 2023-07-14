@@ -118,7 +118,6 @@ public class PaymentController {
 //        System.out.println(properties.toString());
         
 //        HttpResponse<String> response = HttpClient.newHttpClient().send(, HttpResponse.BodyHandlers.ofString());
-       
         
 		RedirectView redirectView = new RedirectView();
         redirectView.setUrl("http://localhost:3000/success?amount=" + amount+"&orderId=" + orderId+"&paymentKey="+paymentKey);
@@ -141,7 +140,6 @@ public class PaymentController {
     
     @PostMapping
     public ResponseEntity<?> createPayment(@RequestBody PaymentDTO dto) {
-    	System.out.println(dto.toString());
     	PaymentEntity entity = service.toEntity(dto);
     	List<PaymentEntity> entities = service.create(entity);
     	List<PaymentDTO> dtos = entities.stream().map(PaymentDTO::new).collect(Collectors.toList());

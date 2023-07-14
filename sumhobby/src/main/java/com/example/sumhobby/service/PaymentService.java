@@ -32,7 +32,7 @@ public class PaymentService {
 	private PaymentRespRepository payRespRepository;
 	
 	public PaymentEntity toEntity(PaymentDTO paymentDTO) {
-		return PaymentDTO.toEntity(paymentDTO, classRepository, userRepository, payRespRepository);
+		return PaymentDTO.toEntity(paymentDTO, classRepository, userRepository);
 	}
 	
 	public List<PaymentEntity> create(final PaymentEntity entity){
