@@ -115,6 +115,7 @@ public class AdminController {
 					.className(classDTO.getClassName())
 					.classDetail(classDTO.getClassDetail())
 					.classCategory(classDTO.getClassCategory())
+					.classImg(classDTO.getClassImg())
 					.userRef(userService.selectOneByUserId(classDTO.getUserId()))
 					.classPrice(classDTO.getClassPrice())
 					.classSetDate(Timestamp.valueOf(LocalDateTime.now()))
