@@ -41,6 +41,7 @@ public class ClassDTO {
 				.className(dto.getClassName())
 				.classDetail(dto.getClassDetail())
 				.classCategory(dto.getClassCategory())
+				.classImg(dto.getClassImg())
 				.classRate(dto.getClassRate())
 				.userRef(userRepository.findByUserId(dto.userId))
 				.build();

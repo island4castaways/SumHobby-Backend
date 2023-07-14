@@ -68,10 +68,10 @@ public class ReviewController {
 
 		List<ReviewDTO> dtos = entities.stream().map(ReviewDTO::new).collect(Collectors.toList());
 
-		//        for(int i = 0 ;i < dtos.size();i++) {
-		//        	ClassDTO classDTO = new ClassDTO(service.classRetrieve(dtos.get(i).getClassNum()));
-		//        	dtos.get(i).setClassName(classDTO.getClassName());
-		//        }
+//		        for(int i = 0 ;i < dtos.size();i++) {
+//		        	ClassDTO DTO = new ClassDTO(service.retrieve(dtos.get(i).getClassNum()));
+//		        	dtos.get(i).setClassName(classDTO.getClassName());
+//		        }
 
 		ResponseDTO<ReviewDTO> response = ResponseDTO.<ReviewDTO>builder().data(dtos).build();
 
