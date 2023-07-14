@@ -1,10 +1,7 @@
 package com.example.sumhobby.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-<<<<<<< HEAD
-=======
 import org.springframework.stereotype.Repository;
->>>>>>> refs/remotes/origin/PYK
 
 import com.example.sumhobby.entity.UserEntity;
 
