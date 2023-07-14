@@ -1,5 +1,7 @@
 package com.example.sumhobby.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,8 +19,23 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	public List<UserEntity> selectAll() {
+		return userRepository.findAll();
+	}
+	
+	public UserEntity selectOne(String userTk) {
+		return userRepository.findById(userTk).get();
+	}
+	
+	public UserEntity selectOneByUserId(String userId) {
+		return userRepository.findByUserId(userId);
+	}
+	
+	public UserEntity update(final UserEntity userEntity) {
+		return userRepository.save(userEntity);
+	}
 
-	// 사용자 생성
 	public UserEntity create(final UserEntity userEntity) {
 		// 유효성 체크
 		if (userEntity == null || userEntity.getUserId() == null) {
@@ -71,7 +88,7 @@ public class UserService {
 	}
 
 	// 비밀번호 확인
-	public boolean checkPassword(UserEntity user, String password) {
+	public Boolean checkPassword(UserEntity user, String password) {
 		// 비밀번호 확인 로직 구현
 		// 예시로 BCryptPasswordEncoder를 사용한 비밀번호 확인
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -117,5 +134,4 @@ public class UserService {
 		return userRepository.findById(userTk).get();
 	}
 	
-
 }

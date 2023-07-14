@@ -31,9 +31,8 @@ public class UserController {
 	@Autowired
 	private TokenProvider tokenProvider;
 	
-	private PasswordEncoder passenEncoder = new BCryptPasswordEncoder();
+	private PasswordEncoder pwEncoder = new BCryptPasswordEncoder();
 
-	
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO){
 		//패스워드 검증
@@ -44,7 +43,7 @@ public class UserController {
 			// 요청을 이용해 저장할 유저 만들기
 			UserEntity user = UserEntity.builder()
 					.userId(userDTO.getUserId())
-					.password(passenEncoder.encode(userDTO.getPassword()))
+					.password(pwEncoder.encode(userDTO.getPassword()))
 					.email(userDTO.getEmail()) 
 	                .userName(userDTO.getUserName())
 	                .phone(userDTO.getPhone())
@@ -68,7 +67,7 @@ public class UserController {
 		UserEntity user = userService.getByCredentials(
 				userDTO.getUserId(), 
 				userDTO.getPassword(), 
-				passenEncoder);
+				pwEncoder);
 		
 		//검증
 		if(user != null) {

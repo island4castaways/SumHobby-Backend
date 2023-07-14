@@ -16,31 +16,33 @@ import com.example.sumhobby.service.UserService;
 @RestController
 @RequestMapping("/search")
 public class UserSearchController {
+	
 	@Autowired
-    private UserService userService;
+	private UserService userService;
 
-    @GetMapping("/id")
-    public ResponseEntity<?> findUserIdByEmail(@RequestParam("email") String email) {
-        UserEntity user = userService.findByEmail(email);
+	@GetMapping("/id")
+	public ResponseEntity<?> findUserIdByEmail(@RequestParam("email") String email) {
+		UserEntity user = userService.findByEmail(email);
 
-        if (user != null) {
-            return ResponseEntity.ok().body(user.getUserId());
-        } else {
-            return ResponseEntity.badRequest().body("User not found");
-        }
-    }
-    @PostMapping("/password")
-    public ResponseEntity<?> checkPassword(@RequestBody UserDTO userDTO) {
-        UserEntity user = userService.findByUserIdAndEmail(userDTO.getUserId(), userDTO.getEmail());
+		if (user != null) {
+			return ResponseEntity.ok().body(user.getUserId());
+		} else {
+			return ResponseEntity.badRequest().body("User not found");
+		}
+	}
 
-        if (user != null) {
-            if (userService.checkPassword(user, userDTO.getPassword())) {
-                return ResponseEntity.ok().body("Password is correct");
-            } else {
-                return ResponseEntity.badRequest().body("Password is incorrect");
-            }
-        } else {
-            return ResponseEntity.badRequest().body("User not found");
-        }
+	@PostMapping("/password")
+	public ResponseEntity<?> checkPassword(@RequestBody UserDTO userDTO) {
+		UserEntity user = userService.findByUserIdAndEmail(userDTO.getUserId(), userDTO.getEmail());
+
+		if (user != null) {
+			if (userService.checkPassword(user, userDTO.getPassword())) {
+				return ResponseEntity.ok().body("Password is correct");
+			} else {
+				return ResponseEntity.badRequest().body("Password is incorrect");
+			}
+		} else {
+			return ResponseEntity.badRequest().body("User not found");
+		}
+	}
 }
-    }

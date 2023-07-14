@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,13 +31,15 @@ public class ReviewEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer revNum;
-
+	
+	//º°Á¡
 	@Column(nullable = false)
 	private double revRate;
 
 	@Column(nullable = false)
 	private String revContent;
 	
+	@CreationTimestamp
 	private Timestamp revDate;
 	
 	@ManyToOne
