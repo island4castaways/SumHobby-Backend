@@ -28,6 +28,7 @@ import com.example.sumhobby.repository.ClassRepository;
 import com.example.sumhobby.repository.UserRepository;
 import com.example.sumhobby.service.ClassService;
 import com.example.sumhobby.service.ReviewService;
+import com.example.sumhobby.service.UserService;
 
 @RestController
 @RequestMapping("/review")
@@ -39,6 +40,9 @@ public class ReviewController {
 	@Autowired
 	private ClassService classService;
 	
+	@Autowired
+	private UserService userService;
+	
 	@PostMapping("/addreview")
 	public ResponseEntity<?> createReview(@RequestBody ReviewDTO reviewDTO) {
 		ReviewEntity entity = ReviewEntity.builder()
@@ -46,6 +50,7 @@ public class ReviewController {
 				.revDate(Timestamp.valueOf(LocalDateTime.now()))
 				.revRate(reviewDTO.getRevRate())
 				.classRef(classService.selectOne(reviewDTO.getClassNum()))
+				.userRef(userService.selectOneByUserId(reviewDTO.getUserId()))
 				.build();
 //		reviewDTO.setClassNum(classService.create(reviewDTO.getClassName()).getClassNum());
 		

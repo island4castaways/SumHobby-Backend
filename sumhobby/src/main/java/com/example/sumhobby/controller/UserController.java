@@ -1,5 +1,6 @@
 package com.example.sumhobby.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,6 +8,7 @@ import java.util.stream.Collectors;
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +38,15 @@ public class UserController {
 	private TokenProvider tokenProvider;
 	
 	private PasswordEncoder pwEncoder = new BCryptPasswordEncoder();
+	
+	//userToken으로 userEntity 반환
+	@GetMapping("/returnUser")
+	public ResponseEntity<?> returnUser(Principal principal) {
+		String token = principal.getName();
+		UserEntity entity = userService.selectOne(token);
+		UserDTO dto = new UserDTO(entity);
+		return ResponseEntity.ok().body(dto);
+	}
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO){
