@@ -1,6 +1,7 @@
 package com.example.sumhobby.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -62,21 +63,16 @@ public class UserService {
 	}
 	
 	// 사용자 정보 가져오기
-	public UserDTO getUserInfo(String userId) {
-	    UserEntity userEntity = userRepository.findByUserId(userId);
-	    if (userEntity == null) {
-	        throw new RuntimeException("User not found.");
-	    }
-	    // UserEntity에서 필요한 정보를 UserDTO로 변환하여 반환
-	    UserDTO userDTO = new UserDTO();
-	    userDTO.setUserId(userEntity.getUserId());
-	    userDTO.setUserName(userEntity.getUserName());
-	    userDTO.setEmail(userEntity.getEmail());
-	    userDTO.setPhone(userEntity.getPhone());	   
-	    return userDTO;
+	public UserEntity getUserInfo(String userId) {
+	    return userRepository.findByUserId(userId);
+	}	
+	
+	// 사용자 정보 수정하기
+	public void modifyUser(UserEntity user) {
+	    userRepository.save(user);
 	}
 
-
+	
 	// 이메일로 사용자 찾기
 	public UserEntity findByEmail(String email) {
 		return userRepository.findByEmail(email);
@@ -106,7 +102,7 @@ public class UserService {
 		return false;
 	}
 
-	// 회원 정보 수정
+//	// 회원 정보 수정
 	public UserEntity modify(UserEntity user, UserDTO userDTO) {
 		// id로 엔티티를 찾고 그 entity의 userId가 session의 userId와 같으면 수정한 부분 저장 후 성공
 		if (user != null) {

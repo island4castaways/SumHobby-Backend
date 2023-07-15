@@ -1,5 +1,7 @@
 package com.example.sumhobby.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +16,7 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
 	
 	UserEntity findByEmail(String email);
 	UserEntity findByUserIdAndEmail(String userId, String email);
+	Optional<UserEntity> findByUserTk(String userTk);
+
 
 }
