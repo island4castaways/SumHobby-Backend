@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.dto.LectureDTO;
 import com.example.sumhobby.dto.ResponseDTO;
+import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.LectureEntity;
 import com.example.sumhobby.service.LectureService;
 

@@ -50,10 +50,6 @@ public class UserEntity {
    //OAuth에서 사용할 유저 정보 제공자
    private String authProvider;
    
-   @OneToMany(mappedBy = "userRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
-   @EqualsAndHashCode.Exclude
-   private List<SubscribeEntity> subscribes;
-   
    @OneToMany(mappedBy = "userRef")
    @EqualsAndHashCode.Exclude
    private List<QuestionEntity> questions;
@@ -73,5 +69,9 @@ public class UserEntity {
    @OneToMany(mappedBy = "userRef")
    @EqualsAndHashCode.Exclude
    private List<ClassEntity> classes;
+   
+   @OneToMany(mappedBy = "userRef")
+   @EqualsAndHashCode.Exclude
+   private List<PaymentEntity> payments;
 
 }

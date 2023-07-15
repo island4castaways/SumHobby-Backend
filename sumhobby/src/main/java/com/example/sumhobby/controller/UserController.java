@@ -1,5 +1,6 @@
 package com.example.sumhobby.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +39,15 @@ public class UserController {
 	private TokenProvider tokenProvider;
 	
 	private PasswordEncoder pwEncoder = new BCryptPasswordEncoder();
+	
+	//userToken으로 userEntity 반환
+	@GetMapping("/returnUser")
+	public ResponseEntity<?> returnUser(Principal principal) {
+		String token = principal.getName();
+		UserEntity entity = userService.selectOne(token);
+		UserDTO dto = new UserDTO(entity);
+		return ResponseEntity.ok().body(dto);
+	}
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO){

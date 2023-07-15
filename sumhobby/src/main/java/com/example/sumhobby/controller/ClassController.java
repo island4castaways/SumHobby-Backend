@@ -39,7 +39,7 @@ public class ClassController {
 		List<ClassEntity> topRatedClasses = classService.getTopRatedClassesByCategory();
 		
 		List<ClassDTO> dtos = topRatedClasses.stream().map(ClassDTO::new).collect(Collectors.toList());
-		//List<ClassDTO> topRatedClasses = classService.getTopRatedClassesByCategory();
+//		List<ClassDTO> topRatedClasses = classService.getTopRatedClassesByCategory();
 		
 		ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder().data(dtos).build();
 		

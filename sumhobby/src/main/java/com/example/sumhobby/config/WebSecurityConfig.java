@@ -31,10 +31,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeRequests()
-				.antMatchers("/", "/auth/**", "/admin", "/admin/signin").permitAll()
+				.antMatchers("/", "/auth/**", "/admin/signin", "/class/top-rated", "/class", "/lecture").permitAll()
 				.anyRequest().authenticated();
 		
-		//filter 등록, 매 요청마다 CorsFilter 실행한 후 jwtAuthenticationFilter 실행함
+		//filter �벑濡�, 留� �슂泥�留덈떎 CorsFilter �떎�뻾�븳 �썑 jwtAuthenticationFilter �떎�뻾�븿
 		http.addFilterAfter(jwtAuthenticationFilter, CorsFilter.class);
 	}
 

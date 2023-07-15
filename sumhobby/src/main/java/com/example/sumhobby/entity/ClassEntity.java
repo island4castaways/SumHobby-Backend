@@ -42,6 +42,8 @@ public class ClassEntity {
 	@Column(unique = true,nullable = false)
 	private String className;
 	
+	private String classImg;
+	
 	@ColumnDefault("0.0")
 	@Builder.Default
 	private double classRate = 0.0;
@@ -66,13 +68,12 @@ public class ClassEntity {
 	@OneToMany(mappedBy = "classRef")
 	@EqualsAndHashCode.Exclude
 	private List<ReviewEntity> reviews;
-
-	@OneToMany(mappedBy = "classRef")
-	@EqualsAndHashCode.Exclude
-	private List<SubscribeEntity> subscribes;
 	
 	@OneToMany(mappedBy = "classRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
 	private List<CartEntity> carts;
-
+	
+	@OneToMany(mappedBy = "classRef")
+	@EqualsAndHashCode.Exclude
+	private List<PaymentEntity> payments;
 }

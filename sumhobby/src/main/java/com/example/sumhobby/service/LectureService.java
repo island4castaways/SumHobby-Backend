@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.LectureEntity;
-import com.example.sumhobby.entity.SubscribeEntity;
 import com.example.sumhobby.repository.ClassRepository;
 import com.example.sumhobby.repository.LectureRepository;
 import com.example.sumhobby.repository.UserRepository;
