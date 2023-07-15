@@ -1,7 +1,6 @@
 package com.example.sumhobby.entity;
 
-import java.sql.Timestamp;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,12 +21,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "subscribe")
-public class SubscribeEntity {
+@Table(name = "payment")
+public class PaymentEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer subsNum;
+	private Integer paymentNum;
 	
 	@ManyToOne
 	@JoinColumn(name = "userTk", referencedColumnName = "userTk")
@@ -36,5 +35,8 @@ public class SubscribeEntity {
 	@ManyToOne
 	@JoinColumn(name = "classNum", referencedColumnName = "classNum")
 	private ClassEntity classRef;
+	
+	@Column(unique = true)
+	private String orderId;
 
 }

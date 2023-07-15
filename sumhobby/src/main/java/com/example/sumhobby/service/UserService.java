@@ -12,7 +12,6 @@ import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.asm.Advice.OffsetMapping.Target.ForArray.ReadOnly;
 
 @Slf4j
 @Service

@@ -1,6 +1,5 @@
 package com.example.sumhobby.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -17,16 +16,20 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "admin")
-public class AdminEntity {
+@Table(name = "paymentResp")
+public class PaymentRespEntity {
 	
 	@Id
-	private String adminTk;
+	private String orderId;
 	
-	@Column(unique = true, nullable = false)
-	private String adminId;
+	private Integer amount;
 	
-	@Column(nullable = false)
-	private String adminPw;
+	private String paymentKey;
+	
+	private String orderName;
+	
+	private String requestedAt;
+	
+	private Boolean isSuccessful;
 
 }
