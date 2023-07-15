@@ -2,6 +2,7 @@ package com.example.sumhobby.dto;
 
 import com.example.sumhobby.entity.PaymentEntity;
 import com.example.sumhobby.repository.ClassRepository;
+import com.example.sumhobby.repository.PaymentRespRepository;
 import com.example.sumhobby.repository.UserRepository;
 
 import lombok.AllArgsConstructor;

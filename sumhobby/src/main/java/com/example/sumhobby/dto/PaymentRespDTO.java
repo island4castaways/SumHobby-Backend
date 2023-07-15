@@ -1,6 +1,7 @@
 package com.example.sumhobby.dto;
 
 import com.example.sumhobby.entity.PaymentRespEntity;
+import com.example.sumhobby.repository.PaymentRespRepository;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,5 +37,4 @@ public class PaymentRespDTO {
 				.isSuccessful(dto.getIsSuccessful())
 				.build();
 	}
-
 }

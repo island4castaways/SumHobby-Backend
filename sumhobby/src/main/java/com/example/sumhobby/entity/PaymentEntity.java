@@ -23,11 +23,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "payment")
 public class PaymentEntity {
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer paymentNum;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "userTk", referencedColumnName = "userTk")
 	private UserEntity userRef;
@@ -38,5 +37,4 @@ public class PaymentEntity {
 	
 	@Column(unique = true)
 	private String orderId;
-
 }

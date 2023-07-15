@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.sumhobby.dto.CartDTO;
 import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.dto.ResponseDTO;
+import com.example.sumhobby.dto.UserDTO;
 import com.example.sumhobby.entity.CartEntity;
+import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.service.CartService;
 
 @RestController
@@ -40,6 +42,28 @@ public class CartController {
 
 		List<CartEntity> entities = service.retrieve();
 
+		List<CartDTO> dtos = entities.stream().map(CartDTO::new).collect(Collectors.toList());
+
+		for (int i = 0; i < dtos.size(); i++) {
+			ClassDTO classDTO = new ClassDTO(service.classRetrieve(dtos.get(i).getClassNum()).get());
+			dtos.get(i).setClassName(classDTO.getClassName());
+			dtos.get(i).setClassPrice(classDTO.getClassPrice());
+			
+			UserDTO userDTO = new UserDTO(service.userRetrieve(dtos.get(i).getUserTk()));
+			dtos.get(i).setUserEmail(userDTO.getEmail());
+			dtos.get(i).setUserName(userDTO.getUserName());
+		}
+		ResponseDTO<CartDTO> response = ResponseDTO.<CartDTO>builder().data(dtos).build();
+
+		return ResponseEntity.ok().body(response);
+	}
+
+	@DeleteMapping
+	public ResponseEntity<?> deleteCartList(@RequestBody CartDTO dto) {
+		CartEntity entity = service.toEntity(dto);
+
+		List<CartEntity> entities = service.delete(entity);
+		
 		List<CartDTO> dtos = entities.stream().map(CartDTO::new).collect(Collectors.toList());
 
 		for (int i = 0; i < dtos.size(); i++) {

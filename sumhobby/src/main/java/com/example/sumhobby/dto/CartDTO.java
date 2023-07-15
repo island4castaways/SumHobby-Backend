@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class CartDTO {
 	
 	private int cartNum, classNum, classPrice;
-	private String userTk, className;
+	private String userTk, className, userEmail, userName;
 	private boolean add;
 	
 	public CartDTO(final CartEntity entity) {

@@ -72,9 +72,8 @@ public class ClassEntity {
 	@OneToMany(mappedBy = "classRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
 	private List<CartEntity> carts;
-
+	
 	@OneToMany(mappedBy = "classRef")
 	@EqualsAndHashCode.Exclude
 	private List<PaymentEntity> payments;
-
 }
