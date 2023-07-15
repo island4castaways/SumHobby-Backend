@@ -20,21 +20,30 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	public List<UserEntity> selectAll() {
 		return userRepository.findAll();
 	}
-	
+
 	public UserEntity selectOne(String userTk) {
 		return userRepository.findById(userTk).get();
 	}
-	
+
 	public UserEntity selectOneByUserId(String userId) {
 		return userRepository.findByUserId(userId);
 	}
-	
+
 	public UserEntity update(final UserEntity userEntity) {
 		return userRepository.save(userEntity);
+	}
+
+	// 유효성 검사
+	public boolean existsByPhone(String phone) {
+		return userRepository.existsByPhone(phone);
+	}
+
+	public boolean existsByEmail(String email) {
+		return userRepository.existsByEmail(email);
 	}
 
 	public UserEntity create(final UserEntity userEntity) {
@@ -46,6 +55,19 @@ public class UserService {
 		if (userRepository.existsByUserId(userId)) {
 			log.warn("UserId already exits {}", userId);
 			throw new RuntimeException("UserId already exits");
+		}
+
+		// 전화번호 또는 이메일이 이미 존재하는지 확인
+		final String phone = userEntity.getPhone();
+		if (phone != null && userRepository.existsByPhone(phone)) {
+			log.warn("이미 존재하는 전화번호 {}", phone);
+			throw new RuntimeException("이미 존재하는 전화번호");
+		}
+
+		final String email = userEntity.getEmail();
+		if (email != null && userRepository.existsByEmail(email)) {
+			log.warn("이미 존재하는 이메일 {}", email);
+			throw new RuntimeException("이미 존재하는 이메일");
 		}
 
 		return userRepository.save(userEntity); // 사용자 저장 및 결과 반환...
@@ -61,18 +83,17 @@ public class UserService {
 		}
 		return null;
 	}
-	
+
 	// 사용자 정보 가져오기
 	public UserEntity getUserInfo(String userId) {
-	    return userRepository.findByUserId(userId);
-	}	
-	
-	// 사용자 정보 수정하기
-	public void modifyUser(UserEntity user) {
-	    userRepository.save(user);
+		return userRepository.findByUserId(userId);
 	}
 
-	
+	// 사용자 정보 수정하기
+	public void modifyUser(UserEntity user) {
+		userRepository.save(user);
+	}
+
 	// 이메일로 사용자 찾기
 	public UserEntity findByEmail(String email) {
 		return userRepository.findByEmail(email);
@@ -81,6 +102,10 @@ public class UserService {
 	// 아이디와 이메일로 사용자 찾기
 	public UserEntity findByUserIdAndEmail(String userId, String email) {
 		return userRepository.findByUserIdAndEmail(userId, email);
+	}
+
+	public UserEntity retrieveUser(String userTk) {
+		return userRepository.findById(userTk).get();
 	}
 
 	// 비밀번호 확인
@@ -102,32 +127,4 @@ public class UserService {
 		return false;
 	}
 
-//	// 회원 정보 수정
-	public UserEntity modify(UserEntity user, UserDTO userDTO) {
-		// id로 엔티티를 찾고 그 entity의 userId가 session의 userId와 같으면 수정한 부분 저장 후 성공
-		if (user != null) {
-			user.setUserId(userDTO.getUserId());
-			user.setUserName(userDTO.getUserName());
-			user.setPhone(userDTO.getPhone());
-			user.setEmail(userDTO.getEmail());
-			userRepository.save(user);
-			return user;
-		}
-		return user;
-	}
-
-	// 사용자 정보 삭제
-	public Boolean deleteUser(final String userId, final String password) {
-		UserEntity user = userRepository.findByUserId(userId);
-		if (user != null && user.getPassword().equals(password)) {
-			userRepository.delete(user);
-			return true;
-		}
-		return false;
-	}
-	
-	public UserEntity retrieveUser(String userTk) {
-		return userRepository.findById(userTk).get();
-	}
-	
 }

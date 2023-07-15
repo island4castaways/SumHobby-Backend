@@ -29,5 +29,5 @@ public class InquiryService {
 	public void delete(final InquiryEntity entity) {
 		inqRepository.delete(entity);
 	}
-
+	
 }

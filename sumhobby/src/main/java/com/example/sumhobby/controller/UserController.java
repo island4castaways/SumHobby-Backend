@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,16 +32,16 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/auth")
 public class UserController {
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private TokenProvider tokenProvider;
-	
+
 	private PasswordEncoder pwEncoder = new BCryptPasswordEncoder();
-	
-	//userToken으로 userEntity 반환
+
+	// userToken으로 userEntity 반환
 	@GetMapping("/returnUser")
 	public ResponseEntity<?> returnUser(Principal principal) {
 		String token = principal.getName();
@@ -50,89 +51,90 @@ public class UserController {
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO){
-		//패스워드 검증
+	public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
+		// 패스워드 검증
 		try {
-			if(userDTO == null || userDTO.getPassword()== null) {
+			if (userDTO == null || userDTO.getPassword() == null) {
 				throw new RuntimeException("Invalid Password value.");
 			}
 			// 요청을 이용해 저장할 유저 만들기
-			UserEntity user = UserEntity.builder()
-					.userId(userDTO.getUserId())
-					.password(pwEncoder.encode(userDTO.getPassword()))
-					.email(userDTO.getEmail()) 
-	                .userName(userDTO.getUserName())
-	                .phone(userDTO.getPhone())
-					.build();
+			UserEntity user = UserEntity.builder().userId(userDTO.getUserId())
+					.password(pwEncoder.encode(userDTO.getPassword())).email(userDTO.getEmail())
+					.userName(userDTO.getUserName()).phone(userDTO.getPhone()).build();
 			// 서비스를 이용해 리포지터리에 유저 저장
 			UserEntity registeredUser = userService.create(user);
-			UserDTO responseUserDTO = UserDTO.builder()	
-					.userTk(registeredUser.getUserTk())//생성된 임의의 고유값 ID
-					.userId(registeredUser.getUserId())
-					.build();
-			
+			UserDTO responseUserDTO = UserDTO.builder().userTk(registeredUser.getUserTk())// 생성된 임의의 고유값 ID
+					.userId(registeredUser.getUserId()).build();
+
 			return ResponseEntity.ok().body(responseUserDTO);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
 			return ResponseEntity.badRequest().body(responseDTO);
 		}
 	}
-	
+
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO){
-		UserEntity user = userService.getByCredentials(
-				userDTO.getUserId(), 
-				userDTO.getPassword(), 
-				pwEncoder);
-		
-		//검증
-		if(user != null) {
+	public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO) {
+		UserEntity user = userService.getByCredentials(userDTO.getUserId(), userDTO.getPassword(), pwEncoder);
+
+		// 검증
+		if (user != null) {
 			// 토큰 생성
 			final String token = tokenProvider.create(user);
-			final UserDTO responsUserDTO = UserDTO.builder()
-					.userId(user.getUserId())
-					.userTk(user.getUserTk())
-					.token(token)
-					.build();
+			final UserDTO responsUserDTO = UserDTO.builder().userId(user.getUserId()).userTk(user.getUserTk())
+					.token(token).build();
 			return ResponseEntity.ok().body(responsUserDTO);
-		}else {
+		} else {
 			ResponseDTO<?> responseDTO = ResponseDTO.builder().error("Login Failed.").build();
 			return ResponseEntity.badRequest().body(responseDTO);
 		}
 	}
-	
-	@PutMapping("/update")
-	public ResponseEntity<?> Update(@AuthenticationPrincipal String userTk, UserDTO userDTO){
-		UserEntity userEntity = userService.retrieveUser(userTk);
-		userEntity = userService.modify(userEntity, userDTO);
-		List<UserEntity> entities = new ArrayList<UserEntity>();
-		entities.add(userEntity);
-		List<UserDTO> dtos = entities.stream().map(UserDTO::new).collect(Collectors.toList());
-		ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder().data(dtos).build();
-		return ResponseEntity.ok().body(response);
+
+	@PutMapping("/modifyuser")
+	public ResponseEntity<?> modifyUserInfo(@RequestBody UserDTO userDTO) {
+		try {
+			UserEntity userEntity = userService.selectOne(userDTO.getUserId());
+			userEntity.setPhone(userDTO.getPhone());
+			userEntity.setEmail(userDTO.getEmail());
+			userService.update(userEntity); // update 메서드로 수정된 정보를 저장
+
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+			return ResponseEntity.badRequest().body(responseDTO);
+		}
 	}
-	
+
+	// 넘어간 것 같아서 유효성 검사 넣어둔건데... 디비보니까 안 넘ㅇ어갔더라고..허허
+	@PostMapping("/checkEmail")
+	public ResponseEntity<?> checkDuplicateEmail(@RequestBody UserDTO userDTO) {
+		if (userService.existsByEmail(userDTO.getEmail())) {
+			return ResponseEntity.ok("Email already exists");
+		}
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping(path = "/checkPhone")
+	public ResponseEntity<?> checkDuplicatePhone(@RequestBody UserDTO userDTO) {
+		if (userService.existsByPhone(userDTO.getPhone())) {
+			return ResponseEntity.ok("Phone number already exists");
+		}
+		return ResponseEntity.ok().build();
+	}
+
 	@GetMapping("/userinfo")
 	public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal String userTk) {
-	    try {
-	        UserEntity userEntity = userService.selectOne(userTk);
-	        System.out.println(userEntity.toString());
-//	        List<UserEntity> entities = new ArrayList<UserEntity>();
-//	        entities.add(userEntity);
-	        
-//	        List<UserDTO> dtos = entities.stream().map(UserDTO::new).collect(Collectors.toList()); 
-//	        ResponseDTO<UserDTO> response = ResponseDTO.<UserDTO>builder().data(dtos).build();
-	        UserDTO dto = new UserDTO(userEntity);
-	        return ResponseEntity.ok().body(dto);
-	    } catch (Exception e) {
-	        String errorMessage = e.getMessage();
-	        ResponseDTO<String> response = ResponseDTO.<String>builder()
-	                .error(errorMessage).build();
-	        return ResponseEntity.ok().body(response);
-	    }
+		try {
+			UserEntity userEntity = userService.selectOne(userTk);
+			System.out.println(userEntity.toString());
+			UserDTO dto = new UserDTO(userEntity);
+			return ResponseEntity.ok().body(dto);
+
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			ResponseDTO<String> response = ResponseDTO.<String>builder().error(errorMessage).build();
+			return ResponseEntity.ok().body(response);
+		}
 	}
-
-
-
 
 }
