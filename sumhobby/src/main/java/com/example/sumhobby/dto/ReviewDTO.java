@@ -29,7 +29,8 @@ public class ReviewDTO {
 //		this.className = entity.getClassRef().getClassName();
 		this.revRate = entity.getRevRate();
 		this.revContent = entity.getRevContent();
-//		this.userId = entity.getUserRef().getUserId();
+		this.userId = entity.getUserRef().getUserId();
+		//안되면 이거 주석
 	}
 	public static ReviewEntity toEntity(final ReviewDTO dto,ClassRepository classrep,UserRepository userrep) {
 		return ReviewEntity.builder()
