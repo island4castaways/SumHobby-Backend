@@ -23,6 +23,7 @@ import com.example.sumhobby.dto.ResponseDTO;
 import com.example.sumhobby.entity.PaymentEntity;
 import com.example.sumhobby.entity.PaymentRespEntity;
 import com.example.sumhobby.service.PaymentService;
+import com.example.sumhobby.service.UserService;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -30,6 +31,8 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -42,6 +45,9 @@ public class PaymentController {
 	
 	@Autowired
 	private PaymentService service;
+	
+	@Autowired
+	private UserService userService;
 	
     @GetMapping(value = "/success")
     public RedirectView paymentResult(
@@ -146,8 +152,9 @@ public class PaymentController {
     @PostMapping
     public ResponseEntity<?> createPayment(@AuthenticationPrincipal String userTk, @RequestBody PaymentDTO dto) {
     	System.out.println(dto.toString());
-    	dto.setUserTk(userTk);
+    	dto.setUserId(userService.selectOne(userTk).getUserId());
     	PaymentEntity entity = service.toEntity(dto);
+    	entity.setPayDate(Timestamp.valueOf(LocalDateTime.now()));
     	List<PaymentEntity> entities = service.create(entity);
     	List<PaymentDTO> dtos = entities.stream().map(PaymentDTO::new).collect(Collectors.toList());
     	ResponseDTO<PaymentDTO> response = ResponseDTO.<PaymentDTO>builder().data(dtos).build();
