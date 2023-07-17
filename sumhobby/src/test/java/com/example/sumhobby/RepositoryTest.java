@@ -9,6 +9,8 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.entity.ClassEntity;
@@ -23,6 +25,7 @@ import com.example.sumhobby.repository.LectureRepository;
 import com.example.sumhobby.repository.PaymentRepository;
 import com.example.sumhobby.repository.ReviewRepository;
 import com.example.sumhobby.repository.UserRepository;
+import com.example.sumhobby.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +35,8 @@ public class RepositoryTest {
 	
 	@Autowired
 	UserRepository us;
+	
+	PasswordEncoder pwEncoder = new BCryptPasswordEncoder();
 	
 	@Autowired
 	ClassRepository cl;
@@ -53,9 +58,9 @@ public class RepositoryTest {
 		IntStream.rangeClosed(0, 50).forEach(i -> {
 			UserEntity entity = UserEntity.builder()
 					.userId("testuser" + i)
-					.password("testuser")
+					.password(pwEncoder.encode("testuser"))
 					.userName("tester" + i)
-					.phone("01012345678")
+					.phone("010123412" + (i < 10 ? ("0" + i) : i))
 					.email("testuser" + i + "@test.com")
 					.build();
 			us.save(entity);
@@ -64,12 +69,12 @@ public class RepositoryTest {
 	
 	@Test
 	public void testInsertClasses() {
-		IntStream.rangeClosed(0, 49).forEach(i -> {
+		IntStream.rangeClosed(0, 29).forEach(i -> {
 			ClassEntity entity = ClassEntity.builder()
 					.className("testClass" + i)
 					.classDetail("testClass" + i + " Detail")
 					.classCategory("test")
-					.classImg("#")
+					.classImg("https://i.ibb.co/T1B5pVN/Play.png")
 					.classRate(0.0)
 					.classPrice(10000 * i)
 					.classSetDate(Timestamp.valueOf(LocalDateTime.now()))
@@ -96,7 +101,7 @@ public class RepositoryTest {
 					.classRef(cl.findById(1).get())
 					.lecTitle("testLecture" + i)
 					.lecDetail("testLecture" + i + " Detail")
-					.lecUrl("#")
+					.lecUrl("https://i.ibb.co/T1B5pVN/Play.png")
 					.build();
 			le.save(entity);
 		});
@@ -121,6 +126,7 @@ public class RepositoryTest {
 					.userRef(us.findByUserId("testuser" + i))
 					.classRef(cl.findById(1).get())
 					.payDate(Timestamp.valueOf(LocalDateTime.now()))
+					.orderId("testPaymentOrderId" + i)
 					.build();
 			pa.save(entity);
 		});
