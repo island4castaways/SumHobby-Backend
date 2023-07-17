@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.LectureEntity;
+import com.example.sumhobby.entity.ReviewEntity;
 import com.example.sumhobby.repository.ClassRepository;
 import com.example.sumhobby.repository.LectureRepository;
 import com.example.sumhobby.repository.UserRepository;
@@ -45,9 +46,5 @@ public class LectureService {
 	public List<LectureEntity> retrive(){
 		return lecRepository.findAll();
 	}
-	
-	//������ ������� Ȯ���ϴ� service�ۼ�
-//	public List<SubscribeEntity> getFindByAllSub(){
-//		return lecRepository.findBy
-//	}
+
 }

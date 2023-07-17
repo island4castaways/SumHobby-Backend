@@ -9,13 +9,18 @@ import org.springframework.stereotype.Service;
 
 import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.entity.ClassEntity;
+import com.example.sumhobby.entity.ReviewEntity;
 import com.example.sumhobby.repository.ClassRepository;
+import com.example.sumhobby.repository.ReviewRepository;
 
 @Service
 public class ClassService {
 	
 	@Autowired
 	private ClassRepository classRepository;
+	
+	@Autowired
+	private ReviewRepository revRepository;
 	
 	public List<ClassEntity> retrieve(){
 		return classRepository.findAll();
@@ -45,4 +50,9 @@ public class ClassService {
 	    return topRatedClassesByCategory;
 	}
 
+//	public ClassEntity averageRevRate(final ReviewEntity entity) {
+//		
+//		List<ClassEntity> average = revRepository.findByRevRate();
+//		return average;
+//	}
 }

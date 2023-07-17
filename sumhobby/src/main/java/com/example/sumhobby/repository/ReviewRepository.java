@@ -20,4 +20,6 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
     List<ReviewEntity> findByClassId(Integer classId);
 	
 	List<ReviewEntity> findByClassRef(ClassEntity classEntity);
+	
+	boolean existsByUserRefAndClassRef(UserEntity userRef, ClassEntity classRef);
 }

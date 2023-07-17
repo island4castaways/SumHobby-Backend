@@ -27,7 +27,6 @@ public class ReviewDTO {
 	
 	public ReviewDTO(final ReviewEntity entity) {
 		this.revNum = entity.getRevNum();
-//		this.className = entity.getClassRef().getClassName();
 		this.revRate = entity.getRevRate();
 		this.revContent = entity.getRevContent();
 		this.userId = entity.getUserRef().getUserId();
