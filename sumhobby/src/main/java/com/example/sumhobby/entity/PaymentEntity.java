@@ -37,7 +37,7 @@ public class PaymentEntity {
 	@JoinColumn(name = "classNum", referencedColumnName = "classNum")
 	private ClassEntity classRef;
 	
-	@Column(unique = true)
+	@Column
 	private String orderId;
 	
 	private Timestamp payDate;
