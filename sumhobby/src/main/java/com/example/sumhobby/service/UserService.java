@@ -117,14 +117,14 @@ public class UserService {
 	}
 
 	// Password 수정
-	public Boolean pwmodify(final String userId, final String oldpassword, final String newpassword) {
-		UserEntity user = userRepository.findByUserId(userId);
-		if (user != null && user.getPassword().equals(oldpassword)) {
-			user.setPassword(newpassword);
+	public String pwmodify(final String userId, final String oldpassword, final String newpassword, final PasswordEncoder encoder) {
+		UserEntity user = userRepository.findById(userId).get();
+		if (encoder.matches(oldpassword, user.getPassword())) {
+			user.setPassword(encoder.encode(newpassword));
 			userRepository.save(user);
-			return true;
+			return "success";
 		}
-		return false;
+		return "fail";
 	}
 
 }
