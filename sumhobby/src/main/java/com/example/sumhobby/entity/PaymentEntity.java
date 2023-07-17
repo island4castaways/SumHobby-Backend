@@ -1,5 +1,7 @@
 package com.example.sumhobby.entity;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,4 +39,6 @@ public class PaymentEntity {
 	
 	@Column(unique = true)
 	private String orderId;
+	
+	private Timestamp payDate;
 }

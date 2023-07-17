@@ -35,6 +35,10 @@ public class PaymentService {
 		return PaymentDTO.toEntity(paymentDTO, classRepository, userRepository);
 	}
 	
+	public List<PaymentEntity> selectAll() {
+		return paymentRepository.findAll();
+	}
+	
 	public List<PaymentEntity> create(final PaymentEntity entity){
 		paymentRepository.save(entity);
 		return paymentRepository.findAll();

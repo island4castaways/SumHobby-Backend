@@ -92,17 +92,6 @@ public class RepositoryTest {
 		});
 	}
 	
-//	@Test
-//	public void testInsertAdmin() {
-//		UserEntity entity = UserEntity.builder()
-//				.userId("sumhobbyadmin")
-//				.password("sumhobby230714")
-//				.userName("administor")
-//				.role("관리자")
-//				.build();
-//		us.save(entity);
-//	}
-	
 	@Test
 	public void testInsertInquiries() {
 		IntStream.rangeClosed(0, 19).forEach(i -> {
