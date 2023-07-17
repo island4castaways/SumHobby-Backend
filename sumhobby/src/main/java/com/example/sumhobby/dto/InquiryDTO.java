@@ -1,6 +1,7 @@
 package com.example.sumhobby.dto;
 
 import com.example.sumhobby.entity.InquiryEntity;
+import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.util.Util;
 
 import lombok.AllArgsConstructor;
@@ -26,4 +27,18 @@ public class InquiryDTO {
 		this.userId = entity.getUserRef().getUserId();
 	}
 
-}
+	 public static InquiryEntity toEntity(InquiryDTO inquiryDTO) {
+	        InquiryEntity entity = new InquiryEntity();
+	        entity.setInqNum(inquiryDTO.getInqNum());
+	        entity.setInqContent(inquiryDTO.getInqContent());
+	        entity.setInqAnswer(inquiryDTO.getInqAnswer());
+	        entity.setInqDate(Util.stringToTimestamp(inquiryDTO.getInqDate()));
+	        entity.setInqAnsDate(Util.stringToTimestamp(inquiryDTO.getInqAnsDate()));
+
+	        UserEntity userEntity = new UserEntity();
+	        userEntity.setUserId(inquiryDTO.getUserId());
+	        entity.setUserRef(userEntity);
+
+	        return entity;
+	    }
+	}

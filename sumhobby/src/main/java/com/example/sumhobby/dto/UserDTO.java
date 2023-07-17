@@ -25,5 +25,18 @@ public class UserDTO {
       this.role = entity.getRole();
       this.authProvider = entity.getAuthProvider();
    }
+   
+   public static UserEntity toEntity(final UserDTO dto) {
+	   return UserEntity.builder()
+			   .userTk(dto.getUserTk())
+			   .userId(dto.getUserId())
+			   .password(dto.getPassword())
+			   .userName(dto.getUserName())
+			   .phone(dto.getPhone())
+			   .email(dto.getEmail())
+			   .role(dto.getRole())
+			   .authProvider(dto.getAuthProvider())
+			   .build();
+   }
 
 }

@@ -27,20 +27,11 @@ public class ReviewDTO {
 	
 	public ReviewDTO(final ReviewEntity entity) {
 		this.revNum = entity.getRevNum();
-//		this.className = entity.getClassRef().getClassName();
 		this.revRate = entity.getRevRate();
 		this.revContent = entity.getRevContent();
 		this.userId = entity.getUserRef().getUserId();
+		this.classNum = entity.getClassRef().getClassNum();
 		this.revDate = Util.timestampToString(entity.getRevDate());
 	}
-//	public static ReviewEntity toEntity(final ReviewDTO dto,ClassRepository classrep,UserRepository userrep) {
-//		return ReviewEntity.builder()
-//				.revNum(dto.getRevNum())
-//				.classRef(classrep.findById(dto.classNum).get())
-//				.userRef(userrep.findByUserId(dto.userId))
-//				.revDate(dto.getRevDate())
-//				.revRate(dto.getRevRate())
-//				.revContent(dto.getRevContent())
-//				.build();
-//	}
+	
 }

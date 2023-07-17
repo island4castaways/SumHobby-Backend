@@ -30,10 +30,6 @@ public class ReviewService {
 		return revRepository.findById(revNum).get();
 	}
 	
-//	public ClassEntity classRetrieve(int classNum){
-//		return classRepository.findById(classNum).get();
-//	}
-	
 	public List<ReviewEntity> selectByClassRef(ClassEntity classEntity) {
 		return revRepository.findByClassRef(classEntity);
 	}
@@ -51,10 +47,8 @@ public class ReviewService {
 		return revRepository.findByClassId(classId);
 	}
 	
-//	public boolean hasExistingReview(ClassEntity classEntity,UserEntity userEntity) {
-//	    UserEntity user = UserService.selectOneByUserId(userEntity);
-//	    ClassEntity classEntity = ClassService.selectOne(classNum);
-//	    return revRepository.existsByUserRefAndClassRef(user, classEntity);
-//	}
-
+	public void delete(ReviewEntity entity) {
+		revRepository.delete(entity);
+	}
+	
 }

@@ -21,16 +21,22 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.dto.InquiryDTO;
 import com.example.sumhobby.dto.LectureDTO;
+import com.example.sumhobby.dto.PaymentDTO;
 import com.example.sumhobby.dto.ResponseDTO;
+import com.example.sumhobby.dto.ReviewDTO;
 import com.example.sumhobby.dto.UserDTO;
 import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.InquiryEntity;
 import com.example.sumhobby.entity.LectureEntity;
+import com.example.sumhobby.entity.PaymentEntity;
+import com.example.sumhobby.entity.ReviewEntity;
 import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.security.TokenProvider;
 import com.example.sumhobby.service.ClassService;
 import com.example.sumhobby.service.InquiryService;
 import com.example.sumhobby.service.LectureService;
+import com.example.sumhobby.service.PaymentService;
+import com.example.sumhobby.service.ReviewService;
 import com.example.sumhobby.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +62,12 @@ public class AdminController {
 	
 	@Autowired
 	private InquiryService inqService;
+	
+	@Autowired
+	private PaymentService payService;
+	
+	@Autowired
+	private ReviewService revService;
 	
 	@PostMapping("/signin")
 	public ResponseEntity<?> signin(@RequestBody UserDTO userDTO) {
@@ -279,6 +291,42 @@ public class AdminController {
 		} catch (Exception e) {
 			String msg = e.getMessage();
 			ResponseDTO<InquiryDTO> response = ResponseDTO.<InquiryDTO>builder()
+					.error(msg).build();
+			return ResponseEntity.badRequest().body(response);
+		}
+	}
+	
+	@GetMapping("/payments")
+	public ResponseEntity<?> getPayments() {
+		List<PaymentEntity> entities = payService.selectAll();
+		List<PaymentDTO> dtos = entities.stream().map(PaymentDTO::new).collect(Collectors.toList());
+		ResponseDTO<PaymentDTO> response = ResponseDTO.<PaymentDTO>builder()
+				.data(dtos).build();
+		return ResponseEntity.ok().body(response);
+	}
+	
+	@PatchMapping("/reviews")
+	public ResponseEntity<?> getReviews(@RequestBody ClassDTO classDTO) {
+		ClassEntity classEntity = classService.selectOne(classDTO.getClassNum());
+		List<ReviewEntity> entities = revService.selectByClassRef(classEntity);
+		List<ReviewDTO> dtos = entities.stream().map(ReviewDTO::new).collect(Collectors.toList());
+		ResponseDTO<ReviewDTO> response = ResponseDTO.<ReviewDTO>builder()
+				.data(dtos).build();
+		return ResponseEntity.ok().body(response);
+	}
+	
+	@DeleteMapping("/deleteReview")
+	public ResponseEntity<?> deleteReview(@RequestBody ReviewDTO reviewDTO) {
+		try {
+			ReviewEntity entity = revService.selectOne(reviewDTO.getRevNum());
+			revService.delete(entity);
+			log.info("review for class " + reviewDTO.getClassNum() + " asked to be deleted.");
+			ClassEntity classEntity = classService.selectOne(reviewDTO.getClassNum());
+			log.info("" + classEntity.getClassNum());
+			return getReviews(new ClassDTO(classEntity));
+		} catch (Exception e) {
+			String msg = e.getMessage();
+			ResponseDTO<ReviewDTO> response = ResponseDTO.<ReviewDTO>builder()
 					.error(msg).build();
 			return ResponseEntity.badRequest().body(response);
 		}
