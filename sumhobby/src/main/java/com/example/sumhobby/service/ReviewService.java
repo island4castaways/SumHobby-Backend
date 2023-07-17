@@ -64,4 +64,8 @@ public class ReviewService {
 		return revRepository.findByClassId(classId);
 	}
 	
+	public void delete(ReviewEntity entity) {
+		revRepository.delete(entity);
+	}
+	
 }
