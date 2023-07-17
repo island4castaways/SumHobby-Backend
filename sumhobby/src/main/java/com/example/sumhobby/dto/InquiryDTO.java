@@ -34,6 +34,7 @@ public class InquiryDTO {
 	        entity.setInqAnswer(inquiryDTO.getInqAnswer());
 	        entity.setInqDate(Util.stringToTimestamp(inquiryDTO.getInqDate()));
 	        entity.setInqAnsDate(Util.stringToTimestamp(inquiryDTO.getInqAnsDate()));
+	       
 
 	        UserEntity userEntity = new UserEntity();
 	        userEntity.setUserId(inquiryDTO.getUserId());

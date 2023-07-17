@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.sumhobby.entity.InquiryEntity;
+import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.repository.InquiryRepository;
 
 @Service
@@ -28,6 +29,10 @@ public class InquiryService {
 	
 	public void delete(final InquiryEntity entity) {
 		inqRepository.delete(entity);
+	}
+	
+	public List<InquiryEntity> selectByUserRef(final UserEntity userEntity) {
+		return inqRepository.findByUserRef(userEntity);
 	}
 	
 }

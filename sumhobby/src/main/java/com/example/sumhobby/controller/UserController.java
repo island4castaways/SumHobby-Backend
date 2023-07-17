@@ -1,29 +1,31 @@
 package com.example.sumhobby.controller;
 
 import java.security.Principal;
-import java.util.ArrayList;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.sumhobby.dto.InquiryDTO;
 import com.example.sumhobby.dto.ResponseDTO;
 import com.example.sumhobby.dto.UserDTO;
+import com.example.sumhobby.entity.InquiryEntity;
 import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.security.TokenProvider;
+import com.example.sumhobby.service.InquiryService;
 import com.example.sumhobby.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,9 @@ public class UserController {
 
 	@Autowired
 	private TokenProvider tokenProvider;
+
+	@Autowired
+	private InquiryService inqService;
 
 	private PasswordEncoder pwEncoder = new BCryptPasswordEncoder();
 
@@ -96,16 +101,31 @@ public class UserController {
 			UserEntity userEntity = userService.selectOne(userDTO.getUserId());
 			userEntity.setPhone(userDTO.getPhone());
 			userEntity.setEmail(userDTO.getEmail());
-			userService.update(userEntity); // update 메서드로 수정된 정보를 저장
+			userService.create(userEntity);
 
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
+			String msg = e.getMessage();
 			ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
 			return ResponseEntity.badRequest().body(responseDTO);
 		}
 	}
 
-	// 넘어간 것 같아서 유효성 검사 넣어둔건데... 디비보니까 안 넘ㅇ어갔더라고..허허
+//	@PutMapping("/modifypw")
+//	public ResponseEntity<?> modifypw(@RequestBody UserDTO userDTO) {
+//		try {
+//			UserEntity userEntity = userService.selectOne(userDTO.getUserId());
+//			userEntity.setPassword(userDTO.getPassword());			
+//			userService.create(userEntity);
+//			return ResponseEntity.ok().build();
+//		} catch (Exception e) {
+//			String msg = e.getMessage();		
+//			ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+//			return ResponseEntity.badRequest().body(responseDTO);
+//		}
+//	}
+//	
+
 	@PostMapping("/checkEmail")
 	public ResponseEntity<?> checkDuplicateEmail(@RequestBody UserDTO userDTO) {
 		if (userService.existsByEmail(userDTO.getEmail())) {
@@ -135,6 +155,38 @@ public class UserController {
 			ResponseDTO<String> response = ResponseDTO.<String>builder().error(errorMessage).build();
 			return ResponseEntity.ok().body(response);
 		}
+	}
+
+	@PostMapping("/inquiry")
+	public ResponseEntity<?> createInquiry(@RequestBody InquiryDTO inquiryDTO) {
+	    try {
+	        String inqContent = inquiryDTO.getInqContent();
+	        
+	        InquiryEntity entity = InquiryEntity.builder()
+	                .inqContent(inqContent)
+	                .inqDate(Timestamp.valueOf(LocalDateTime.now()))
+	                .userRef(userService.selectOneByUserId(inquiryDTO.getUserId()))
+	                .build();
+
+	        inqService.create(entity);
+
+	        UserEntity userEntity = userService.selectOneByUserId(inquiryDTO.getUserId());
+	        return getInquiry(new UserDTO(userEntity));
+	    } catch (Exception e) {
+	        String msg = e.getMessage();
+	        ResponseDTO<InquiryDTO> response = ResponseDTO.<InquiryDTO>builder().error(msg).build();
+	        return ResponseEntity.badRequest().body(response);
+	    }
+	}
+
+	@PatchMapping("/inquiry")
+	public ResponseEntity<?> getInquiry(@RequestBody UserDTO userDTO) {
+		UserEntity userEntity = userService.selectOneByUserId(userDTO.getUserId());
+		List<InquiryEntity> entities = inqService.selectByUserRef(userEntity);
+		List<InquiryDTO> dtos = entities.stream().map(InquiryDTO::new).collect(Collectors.toList());
+		ResponseDTO<InquiryDTO> response = ResponseDTO.<InquiryDTO>builder()
+				.data(dtos).build();
+		return ResponseEntity.ok().body(response);
 	}
 
 }
