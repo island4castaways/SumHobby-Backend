@@ -11,6 +11,7 @@ import com.example.sumhobby.dto.ReviewDTO;
 import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.LectureEntity;
 import com.example.sumhobby.entity.ReviewEntity;
+import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.repository.ClassRepository;
 import com.example.sumhobby.repository.LectureRepository;
 import com.example.sumhobby.repository.ReviewRepository;
@@ -25,12 +26,6 @@ public class ReviewService {
 	@Autowired
 	private ReviewRepository revRepository;
 	
-//	@Autowired
-//	private UserRepository userRepository;
-	
-//	@Autowired
-//	private ClassRepository classRepository;
-
 	public ReviewEntity selectOne(final Integer revNum){
 		return revRepository.findById(revNum).get();
 	}
@@ -51,17 +46,15 @@ public class ReviewService {
 	    return revRepository.save(reviewEntity);
 	}
 
-	
-//	public Optional<LectureEntity> lectureRetrieve(int lectureNum){
-//		return lectureRepository.findById(lectureNum);
-//	}
-
-//	public ReviewEntity toEntity(ReviewDTO revDTO) {
-//		return ReviewDTO.toEntity(revDTO,classRepository,userRepository);
-//	}
 
 	public List<ReviewEntity> findByClassId(Integer classId) {
 		return revRepository.findByClassId(classId);
 	}
 	
+//	public boolean hasExistingReview(ClassEntity classEntity,UserEntity userEntity) {
+//	    UserEntity user = UserService.selectOneByUserId(userEntity);
+//	    ClassEntity classEntity = ClassService.selectOne(classNum);
+//	    return revRepository.existsByUserRefAndClassRef(user, classEntity);
+//	}
+
 }

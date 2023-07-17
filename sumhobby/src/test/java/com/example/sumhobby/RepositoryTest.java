@@ -59,6 +59,7 @@ public class RepositoryTest {
 					.className("testClass" + i)
 					.classDetail("testClass" + i + " Detail")
 					.classCategory("test")
+					.classImg("#")
 					.classRate(0.0)
 					.classPrice(10000 * i)
 					.classSetDate(Timestamp.valueOf(LocalDateTime.now()))

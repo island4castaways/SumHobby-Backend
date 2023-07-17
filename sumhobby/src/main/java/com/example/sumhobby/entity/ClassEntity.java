@@ -68,10 +68,6 @@ public class ClassEntity {
 	@OneToMany(mappedBy = "classRef")
 	@EqualsAndHashCode.Exclude
 	private List<ReviewEntity> reviews;
-
-	@OneToMany(mappedBy = "classRef")
-	@EqualsAndHashCode.Exclude
-	private List<SubscribeEntity> subscribes;
 	
 	@OneToMany(mappedBy = "classRef", cascade = {CascadeType.ALL}, orphanRemoval = true)
 	@EqualsAndHashCode.Exclude
