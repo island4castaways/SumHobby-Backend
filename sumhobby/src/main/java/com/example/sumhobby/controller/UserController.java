@@ -23,12 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.dto.PasswordDTO;
+import com.example.sumhobby.dto.PaymentDTO;
 import com.example.sumhobby.dto.ResponseDTO;
 import com.example.sumhobby.dto.UserDTO;
 import com.example.sumhobby.entity.ClassEntity;
+import com.example.sumhobby.entity.PaymentEntity;
 import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.security.TokenProvider;
 import com.example.sumhobby.service.ClassService;
+import com.example.sumhobby.service.PaymentService;
 import com.example.sumhobby.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +51,9 @@ public class UserController {
 	
 	@Autowired
 	private ClassService classService;
+	
+	@Autowired
+	private PaymentService payService;
 
 	// userToken으로 userEntity 반환
 	@GetMapping("/returnUser")
@@ -180,6 +186,16 @@ public class UserController {
 		List<ClassEntity> entities = classService.seletAllByUserRef(userEntity);
 		List<ClassDTO> dtos = entities.stream().map(ClassDTO::new).collect(Collectors.toList());
 		ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder()
+				.data(dtos).build();
+		return ResponseEntity.ok().body(response);
+	}
+	
+	@PatchMapping("/payments")
+	public ResponseEntity<?> getPayments(@RequestBody UserDTO userDTO) {
+		UserEntity userEntity = userService.selectOne(userDTO.getUserTk());
+		List<PaymentEntity> entities = payService.selectByUserRef(userEntity);
+		List<PaymentDTO> dtos = entities.stream().map(PaymentDTO::new).collect(Collectors.toList());
+		ResponseDTO<PaymentDTO> response = ResponseDTO.<PaymentDTO>builder()
 				.data(dtos).build();
 		return ResponseEntity.ok().body(response);
 	}
