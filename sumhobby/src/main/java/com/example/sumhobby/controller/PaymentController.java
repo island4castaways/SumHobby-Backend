@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.dto.PaymentDTO;
 import com.example.sumhobby.dto.PaymentRespDTO;
 import com.example.sumhobby.dto.ResponseDTO;
 import com.example.sumhobby.entity.PaymentEntity;
+import com.example.sumhobby.entity.PaymentRespEntity;
 import com.example.sumhobby.service.PaymentService;
+import com.example.sumhobby.service.UserService;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -27,6 +31,8 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -40,7 +46,8 @@ public class PaymentController {
 	@Autowired
 	private PaymentService service;
 	
-	PaymentRespDTO paymentRespDTO = new PaymentRespDTO();
+	@Autowired
+	private UserService userService;
 	
     @GetMapping(value = "/success")
     public RedirectView paymentResult(
@@ -49,6 +56,7 @@ public class PaymentController {
             @RequestParam(value = "amount") Integer amount,
             @RequestParam(value = "paymentKey") String paymentKey
             ) throws Exception {
+    	PaymentRespDTO paymentRespDTO = new PaymentRespDTO();
     	paymentRespDTO.setAmount(amount);
     	paymentRespDTO.setOrderId(orderId);
     	paymentRespDTO.setPaymentKey(paymentKey);
@@ -94,6 +102,7 @@ public class PaymentController {
         model.addAttribute("orderName", (String) jsonObject.get("orderName"));
         paymentRespDTO.setOrderName((String) jsonObject.get("orderName"));
         paymentRespDTO.setRequestedAt((String) jsonObject.get("requestedAt"));
+        paymentRespDTO.setIsSuccessful(isSuccess);
         
         if (((String) jsonObject.get("method")) != null) {
             if (((String) jsonObject.get("method")).equals("카드")) {
@@ -116,7 +125,9 @@ public class PaymentController {
         System.out.println(message);
         System.out.println(paymentRespDTO);
 //        System.out.println(properties.toString());
-        
+  
+        PaymentRespEntity entity = PaymentRespDTO.toEntity(paymentRespDTO);
+        service.create(entity);
 //        HttpResponse<String> response = HttpClient.newHttpClient().send(, HttpResponse.BodyHandlers.ofString());
         
 		RedirectView redirectView = new RedirectView();
@@ -139,12 +150,29 @@ public class PaymentController {
     }
     
     @PostMapping
-    public ResponseEntity<?> createPayment(@RequestBody PaymentDTO dto) {
+    public ResponseEntity<?> createPayment(@AuthenticationPrincipal String userTk, @RequestBody PaymentDTO dto) {
+    	System.out.println(dto.toString());
+    	dto.setUserId(userService.selectOne(userTk).getUserId());
     	PaymentEntity entity = service.toEntity(dto);
+    	entity.setPayDate(Timestamp.valueOf(LocalDateTime.now()));
     	List<PaymentEntity> entities = service.create(entity);
     	List<PaymentDTO> dtos = entities.stream().map(PaymentDTO::new).collect(Collectors.toList());
     	ResponseDTO<PaymentDTO> response = ResponseDTO.<PaymentDTO>builder().data(dtos).build();
     	
+    	return ResponseEntity.ok().body(response);
+    }
+    
+    @PostMapping("/result")
+    public ResponseEntity<?> getPayment(@AuthenticationPrincipal String userTk, @RequestBody PaymentRespDTO dto){
+    	
+    	List<PaymentEntity> entities = service.findPayment(dto.getOrderId());
+    	List<PaymentDTO> dtos = entities.stream().map(PaymentDTO::new).collect(Collectors.toList());
+    	for (int i = 0; i < dtos.size(); i++) {
+			ClassDTO classDTO = new ClassDTO(service.classRetrieve(dtos.get(i).getClassNum()).get());
+			dtos.get(i).setClassPrice(classDTO.getClassPrice());
+    	}
+    	ResponseDTO<PaymentDTO> response = ResponseDTO.<PaymentDTO>builder().data(dtos).build();
+    	System.out.println(dtos.toString());
     	return ResponseEntity.ok().body(response);
     }
     

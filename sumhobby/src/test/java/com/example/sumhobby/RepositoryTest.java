@@ -14,10 +14,14 @@ import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.InquiryEntity;
 import com.example.sumhobby.entity.LectureEntity;
+import com.example.sumhobby.entity.PaymentEntity;
+import com.example.sumhobby.entity.ReviewEntity;
 import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.repository.ClassRepository;
 import com.example.sumhobby.repository.InquiryRepository;
 import com.example.sumhobby.repository.LectureRepository;
+import com.example.sumhobby.repository.PaymentRepository;
+import com.example.sumhobby.repository.ReviewRepository;
 import com.example.sumhobby.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +41,12 @@ public class RepositoryTest {
 	
 	@Autowired
 	InquiryRepository in;
+	
+	@Autowired
+	PaymentRepository pa;
+	
+	@Autowired
+	ReviewRepository re;
 	
 	@Test
 	public void testInsertUsers() {
@@ -92,17 +102,6 @@ public class RepositoryTest {
 		});
 	}
 	
-//	@Test
-//	public void testInsertAdmin() {
-//		UserEntity entity = UserEntity.builder()
-//				.userId("sumhobbyadmin")
-//				.password("sumhobby230714")
-//				.userName("administor")
-//				.role("관리자")
-//				.build();
-//		us.save(entity);
-//	}
-	
 	@Test
 	public void testInsertInquiries() {
 		IntStream.rangeClosed(0, 19).forEach(i -> {
@@ -112,6 +111,32 @@ public class RepositoryTest {
 					.userRef(us.findByUserId("testuser" + i))
 					.build();
 			in.save(entity);
+		});
+	}
+	
+	@Test
+	public void testInsertPayments() {
+		IntStream.rangeClosed(0, 19).forEach(i -> {
+			PaymentEntity entity = PaymentEntity.builder()
+					.userRef(us.findByUserId("testuser" + i))
+					.classRef(cl.findById(1).get())
+					.payDate(Timestamp.valueOf(LocalDateTime.now()))
+					.build();
+			pa.save(entity);
+		});
+	}
+	
+	@Test
+	public void testInsertReviews() {
+		IntStream.range(0, 19).forEach(i -> {
+			ReviewEntity entity = ReviewEntity.builder()
+					.userRef(us.findByUserId("testuser" + i))
+					.classRef(cl.findById(1).get())
+					.revContent("testReview" + i)
+					.revRate(4.0)
+					.revDate(Timestamp.valueOf(LocalDateTime.now()))
+					.build();
+			re.save(entity);
 		});
 	}
 

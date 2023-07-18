@@ -19,7 +19,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+<<<<<<< HEAD
 import com.example.sumhobby.dto.InquiryDTO;
+=======
+import com.example.sumhobby.dto.PasswordDTO;
+>>>>>>> refs/remotes/origin/KNY
 import com.example.sumhobby.dto.ResponseDTO;
 import com.example.sumhobby.dto.UserDTO;
 import com.example.sumhobby.entity.InquiryEntity;
@@ -73,7 +77,7 @@ public class UserController {
 
 			return ResponseEntity.ok().body(responseUserDTO);
 		} catch (Exception e) {
-			ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+			ResponseDTO<?> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
 			return ResponseEntity.badRequest().body(responseDTO);
 		}
 	}
@@ -98,15 +102,43 @@ public class UserController {
 	@PutMapping("/modifyuser")
 	public ResponseEntity<?> modifyUserInfo(@RequestBody UserDTO userDTO) {
 		try {
-			UserEntity userEntity = userService.selectOne(userDTO.getUserId());
+			UserEntity userEntity = userService.selectOne(userDTO.getUserTk());
 			userEntity.setPhone(userDTO.getPhone());
 			userEntity.setEmail(userDTO.getEmail());
+<<<<<<< HEAD
 			userService.create(userEntity);
+=======
+			userService.modifyUser(userEntity); // update 메서드로 수정된 정보를 저장
+>>>>>>> refs/remotes/origin/KNY
 
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
+<<<<<<< HEAD
 			String msg = e.getMessage();
 			ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+=======
+			ResponseDTO<?> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+			return ResponseEntity.badRequest().body(responseDTO);
+		}
+	}
+
+	@PutMapping("/modifypw")
+	public ResponseEntity<?> modifyPw(@AuthenticationPrincipal String userTk,
+			@RequestBody PasswordDTO password) {
+		System.out.println(userTk);
+		System.out.println(password.toString());
+		try {
+			String success = userService.pwmodify(userTk, password.getOriginalPW(), password.getNewPW(), pwEncoder);
+			System.out.println(success);
+			List<String> list = new ArrayList<String>();
+			list.add(success);
+			ResponseDTO<String> response = ResponseDTO.<String>builder().data(list).build();
+			System.out.println(success);
+			return ResponseEntity.ok().body(response);
+		} catch (Exception e) {
+			System.out.println("실패");
+			ResponseDTO<?> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+>>>>>>> refs/remotes/origin/KNY
 			return ResponseEntity.badRequest().body(responseDTO);
 		}
 	}
