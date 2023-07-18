@@ -3,49 +3,40 @@ package com.example.sumhobby.controller;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-<<<<<<< HEAD
-=======
 import org.springframework.web.bind.annotation.PathVariable;
->>>>>>> refs/remotes/origin/KYS
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-import com.example.sumhobby.dto.InquiryDTO;
-=======
-=======
 import com.example.sumhobby.dto.ClassDTO;
->>>>>>> refs/remotes/origin/KYS
+import com.example.sumhobby.dto.InquiryDTO;
 import com.example.sumhobby.dto.PasswordDTO;
->>>>>>> refs/remotes/origin/KNY
+import com.example.sumhobby.dto.PaymentDTO;
 import com.example.sumhobby.dto.ResponseDTO;
 import com.example.sumhobby.dto.UserDTO;
-<<<<<<< HEAD
-import com.example.sumhobby.entity.InquiryEntity;
-=======
 import com.example.sumhobby.entity.ClassEntity;
->>>>>>> refs/remotes/origin/KYS
+import com.example.sumhobby.entity.InquiryEntity;
+import com.example.sumhobby.entity.PaymentEntity;
 import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.security.TokenProvider;
-<<<<<<< HEAD
-import com.example.sumhobby.service.InquiryService;
-=======
 import com.example.sumhobby.service.ClassService;
->>>>>>> refs/remotes/origin/KYS
+import com.example.sumhobby.service.InquiryService;
+import com.example.sumhobby.service.PaymentService;
 import com.example.sumhobby.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -60,9 +51,13 @@ public class UserController {
 
 	@Autowired
 	private TokenProvider tokenProvider;
-
+	
+	@Autowired
+	private PaymentService paymentService;
+	
 	@Autowired
 	private InquiryService inqService;
+
 
 	private PasswordEncoder pwEncoder = new BCryptPasswordEncoder();
 	
@@ -124,18 +119,10 @@ public class UserController {
 			UserEntity userEntity = userService.selectOne(userDTO.getUserTk());
 			userEntity.setPhone(userDTO.getPhone());
 			userEntity.setEmail(userDTO.getEmail());
-<<<<<<< HEAD
-			userService.create(userEntity);
-=======
 			userService.modifyUser(userEntity); // update 메서드로 수정된 정보를 저장
->>>>>>> refs/remotes/origin/KNY
 
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
-<<<<<<< HEAD
-			String msg = e.getMessage();
-			ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
-=======
 			ResponseDTO<?> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
 			return ResponseEntity.badRequest().body(responseDTO);
 		}
@@ -157,26 +144,11 @@ public class UserController {
 		} catch (Exception e) {
 			System.out.println("실패");
 			ResponseDTO<?> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
->>>>>>> refs/remotes/origin/KNY
 			return ResponseEntity.badRequest().body(responseDTO);
 		}
 	}
 
-//	@PutMapping("/modifypw")
-//	public ResponseEntity<?> modifypw(@RequestBody UserDTO userDTO) {
-//		try {
-//			UserEntity userEntity = userService.selectOne(userDTO.getUserId());
-//			userEntity.setPassword(userDTO.getPassword());			
-//			userService.create(userEntity);
-//			return ResponseEntity.ok().build();
-//		} catch (Exception e) {
-//			String msg = e.getMessage();		
-//			ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
-//			return ResponseEntity.badRequest().body(responseDTO);
-//		}
-//	}
-//	
-
+	// 넘어간 것 같아서 유효성 검사 넣어둔건데... 디비보니까 안 넘ㅇ어갔더라고..허허
 	@PostMapping("/checkEmail")
 	public ResponseEntity<?> checkDuplicateEmail(@RequestBody UserDTO userDTO) {
 		if (userService.existsByEmail(userDTO.getEmail())) {
@@ -226,7 +198,7 @@ public class UserController {
 				.data(dtos).build();
 		return ResponseEntity.ok().body(response);
 	}
-
+	
 	@PostMapping("/inquiry")
 	public ResponseEntity<?> createInquiry(@RequestBody InquiryDTO inquiryDTO) {
 	    try {
@@ -258,5 +230,17 @@ public class UserController {
 				.data(dtos).build();
 		return ResponseEntity.ok().body(response);
 	}
+
+	// 결제리스트 부분
+	@PatchMapping("/pay")
+	public ResponseEntity<?> getpay(@RequestBody UserDTO userDTO) {
+	    UserEntity userEntity = userService.selectOneByUserId(userDTO.getUserId());
+	    List<PaymentEntity> entities = paymentService.selectByUserRef(userEntity);
+	    List<PaymentDTO> dtos = entities.stream().map(PaymentDTO::new).collect(Collectors.toList());
+	    ResponseDTO<PaymentDTO> response = ResponseDTO.<PaymentDTO>builder()
+	            .data(dtos).build();
+	    return ResponseEntity.ok().body(response);
+	}
+
 
 }
