@@ -11,6 +11,7 @@ import com.example.sumhobby.dto.PaymentDTO;
 import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.PaymentEntity;
 import com.example.sumhobby.entity.PaymentRespEntity;
+import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.repository.ClassRepository;
 import com.example.sumhobby.repository.PaymentRepository;
 import com.example.sumhobby.repository.PaymentRespRepository;
@@ -59,5 +60,9 @@ public class PaymentService {
 		
 		return classRepository.findById(classNum);
 	}
+	
+	public PaymentEntity selectByClassRefAndUserRef(ClassEntity classEntity, UserEntity userEntity) {
 
+		return paymentRepository.findByClassRefAndUserRef(classEntity, userEntity);
+	}
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +21,11 @@ import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.dto.PaymentDTO;
 import com.example.sumhobby.dto.PaymentRespDTO;
 import com.example.sumhobby.dto.ResponseDTO;
+import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.PaymentEntity;
 import com.example.sumhobby.entity.PaymentRespEntity;
+import com.example.sumhobby.entity.UserEntity;
+import com.example.sumhobby.service.ClassService;
 import com.example.sumhobby.service.PaymentService;
 import com.example.sumhobby.service.UserService;
 
@@ -48,6 +52,9 @@ public class PaymentController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private ClassService classService;
 	
     @GetMapping(value = "/success")
     public RedirectView paymentResult(
@@ -174,6 +181,20 @@ public class PaymentController {
     	ResponseDTO<PaymentDTO> response = ResponseDTO.<PaymentDTO>builder().data(dtos).build();
     	System.out.println(dtos.toString());
     	return ResponseEntity.ok().body(response);
+    }
+    
+    @PatchMapping
+    public ResponseEntity<?> checkPayment(@RequestBody ClassDTO classDTO, @AuthenticationPrincipal String userTk){
+    	UserEntity userEntity = userService.selectOne(userTk);
+    	ClassEntity classEntity = classService.selectOne(classDTO.getClassNum());
+    	PaymentEntity paymentEntity = service.selectByClassRefAndUserRef(classEntity, userEntity);
+    	if(paymentEntity != null) {
+    		ClassEntity responseEntity = paymentEntity.getClassRef();
+    		ClassDTO responseDTO = new ClassDTO(responseEntity);
+    		return ResponseEntity.ok().body(responseDTO);
+    	}else {
+			return ResponseEntity.ok().body(null);
+		}
     }
     
     
