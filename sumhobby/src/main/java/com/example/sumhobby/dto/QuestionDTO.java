@@ -16,7 +16,7 @@ public class QuestionDTO {
 	
 	private int quesNum, classNum, lecNum;
 	private String quesContent, quesAnswer, quesDate, 
-			quesAnsDate, userTk, userId;
+			quesAnsDate, userId;
 
 	public QuestionDTO(final QuestionEntity entity) {
 		this.quesNum = entity.getQuesNum();
@@ -26,7 +26,6 @@ public class QuestionDTO {
 		this.quesAnswer = entity.getQuesAnswer();
 		this.quesDate = Util.timestampToString(entity.getQuesDate());
 		this.quesAnsDate = Util.timestampToString(entity.getQuesAnsDate());
-		this.userTk = entity.getUserRef().getUserTk();
 		this.userId = entity.getUserRef().getUserId();
 	}
 }

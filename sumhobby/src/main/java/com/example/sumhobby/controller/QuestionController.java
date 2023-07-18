@@ -33,70 +33,56 @@ public class QuestionController {
 
 	@Autowired
 	LectureService lecService;
-	
+
 	@Autowired
 	QuestionService queService;
-	
+
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
 	ClassService clasService;
-	
-	@PatchMapping
-	public ResponseEntity<?> getComment(@RequestBody LectureDTO lecDTO){
-		LectureEntity entity = lecService.selectOne(lecDTO.getLecNum());
-		
-		List<QuestionEntity> entities = queService.selectByLectureRef(entity);
-		
-		 List<QuestionDTO> createdQuestionDTO = entities.stream().map(QuestionDTO::new).collect(Collectors.toList());
 
-        ResponseDTO<QuestionDTO> response = ResponseDTO.<QuestionDTO>builder().data(createdQuestionDTO).build();
-        return ResponseEntity.ok().body(response);
+	@PatchMapping
+	public ResponseEntity<?> getComment(@RequestBody LectureDTO lecDTO) {
+		LectureEntity entity = lecService.selectOne(lecDTO.getLecNum());
+
+		List<QuestionEntity> entities = queService.selectByLectureRef(entity);
+
+		List<QuestionDTO> createdQuestionDTO = entities.stream().map(QuestionDTO::new).collect(Collectors.toList());
+
+		ResponseDTO<QuestionDTO> response = ResponseDTO.<QuestionDTO>builder().data(createdQuestionDTO).build();
+		return ResponseEntity.ok().body(response);
 	}
-	
+
 	@PostMapping("/addcomment")
 	public ResponseEntity<?> createComment(@RequestBody QuestionDTO quesDTO) {
-		QuestionEntity entity = QuestionEntity.builder()
-				.quesContent(quesDTO.getQuesContent())
+		QuestionEntity entity = QuestionEntity.builder().quesContent(quesDTO.getQuesContent())
 				.quesDate(Timestamp.valueOf(LocalDateTime.now()))
 				.userRef(userService.selectOneByUserId(quesDTO.getUserId()))
 				.classRef(clasService.selectOne(quesDTO.getClassNum()))
-				.lecRef(lecService.selectOne(quesDTO.getLecNum()))
-				.build();
-		
-        QuestionEntity createdQuestion = queService.create(entity);
-        List<QuestionEntity> entities = queService.selectByLectureRef(lecService.selectOne(quesDTO.getLecNum()));
-        List<QuestionDTO> createdQuestionDTO = entities.stream().map(QuestionDTO::new).collect(Collectors.toList());
+				.lecRef(lecService.selectOne(quesDTO.getLecNum())).build();
 
-        ResponseDTO<QuestionDTO> response = ResponseDTO.<QuestionDTO>builder().data(createdQuestionDTO).build();
-        return ResponseEntity.ok().body(response);
+		QuestionEntity createdQuestion = queService.create(entity);
+		List<QuestionEntity> entities = queService.selectByLectureRef(lecService.selectOne(quesDTO.getLecNum()));
+		List<QuestionDTO> createdQuestionDTO = entities.stream().map(QuestionDTO::new).collect(Collectors.toList());
+
+		ResponseDTO<QuestionDTO> response = ResponseDTO.<QuestionDTO>builder().data(createdQuestionDTO).build();
+		return ResponseEntity.ok().body(response);
 	}
-	
+
 	@PostMapping("/addreply")
 	public ResponseEntity<?> addReply(@RequestBody QuestionDTO quesDTO) {
-	  UserEntity currentUser = userService.retrieveUser(quesDTO.getUserTk());
-	  if (currentUser != null && currentUser.getUserId().equals(quesDTO.getUserId())) {
-	    QuestionEntity question = queService.selectOne(quesDTO.getQuesNum());
-	    if (question != null && question.getUserRef().getUserTk().equals(quesDTO.getUserTk())) {
-	      QuestionEntity entity = QuestionEntity.builder()
-	          .quesAnsDate(Timestamp.valueOf(LocalDateTime.now()))
-	          .quesAnswer(quesDTO.getQuesAnswer())
-	          .userRef(userService.selectOne(quesDTO.getUserTk()))
-	          .userRef(userService.selectOneByUserId(quesDTO.getUserId()))
-	          .build();
-	      
-	      queService.saveQuestion(question);
-	      
-	      List<QuestionEntity> entities = queService.matchUserTk(question.getLecRef().getLecNum(), question.getUserRef().getUserTk());
-	      List<QuestionDTO> createdQuestionDTO = entities.stream().map(QuestionDTO::new).collect(Collectors.toList());
-	      ResponseDTO<QuestionDTO> response = ResponseDTO.<QuestionDTO>builder().data(createdQuestionDTO).build();
-	      return ResponseEntity.ok().body(response);
-	    }
-	  }
-	  return ResponseEntity.badRequest().build();
+		System.out.println("" + quesDTO.toString());
+		QuestionEntity question = queService.selectOne(quesDTO.getQuesNum());
+		question.setQuesAnswer(quesDTO.getQuesAnswer());
+		question.setQuesAnsDate(Timestamp.valueOf(LocalDateTime.now()));
+		queService.saveQuestion(question);
+
+		List<QuestionEntity> entities = queService.selectByLectureRef(lecService.selectOne(quesDTO.getLecNum()));
+		List<QuestionDTO> createdQuestionDTO = entities.stream().map(QuestionDTO::new).collect(Collectors.toList());
+		ResponseDTO<QuestionDTO> response = ResponseDTO.<QuestionDTO>builder().data(createdQuestionDTO).build();
+		return ResponseEntity.ok().body(response);
 	}
 
-
-//	@DeleteMapping
 }

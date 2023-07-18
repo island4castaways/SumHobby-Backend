@@ -19,7 +19,7 @@ public class QuestionService {
 	@Autowired
 	private QuestionRepository quesRepository;
 
-	public QuestionEntity selectOne(final int quesNum) {
+	public QuestionEntity selectOne(final Integer quesNum) {
 		return quesRepository.findById(quesNum).get();
 	}
 

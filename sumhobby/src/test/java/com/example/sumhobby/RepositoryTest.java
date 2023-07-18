@@ -98,7 +98,7 @@ public class RepositoryTest {
 	public void testInsertLectures() {
 		IntStream.rangeClosed(0, 19).forEach(i -> {
 			LectureEntity entity = LectureEntity.builder()
-					.classRef(cl.findById(1).get())
+					.classRef(cl.findById(4).get())
 					.lecTitle("testLecture" + i)
 					.lecDetail("testLecture" + i + " Detail")
 					.lecUrl("https://i.ibb.co/T1B5pVN/Play.png")
