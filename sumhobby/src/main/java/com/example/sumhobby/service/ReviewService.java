@@ -51,4 +51,8 @@ public class ReviewService {
 		revRepository.delete(entity);
 	}
 	
+	public ReviewEntity selectByUserRefAndClassRef(UserEntity userEntity, ClassEntity classEntity) {
+		return revRepository.findByUserRefAndClassRef(userEntity, classEntity);
+	}
+	
 }

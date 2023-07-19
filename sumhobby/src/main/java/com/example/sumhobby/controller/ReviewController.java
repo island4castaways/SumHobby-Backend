@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import com.example.sumhobby.dto.ResponseDTO;
 import com.example.sumhobby.dto.ReviewDTO;
 import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.ReviewEntity;
+import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.service.ClassService;
 import com.example.sumhobby.service.ReviewService;
 import com.example.sumhobby.service.UserService;
@@ -80,6 +82,42 @@ public class ReviewController {
 		ResponseDTO<ReviewDTO> response = ResponseDTO.<ReviewDTO>builder().data(dtos).build();
 
 		return ResponseEntity.ok().body(response);
+	}
+	
+	@PatchMapping("/checkReview")
+	public ResponseEntity<?> checkReview(@RequestBody ClassDTO classDTO, @AuthenticationPrincipal String userTk) {
+		UserEntity userEntity = userService.selectOne(userTk);
+		ClassEntity classEntity = classService.selectOne(classDTO.getClassNum());
+		ReviewEntity revEntity = service.selectByUserRefAndClassRef(userEntity, classEntity);
+		if(revEntity != null) {
+			ReviewDTO revDTO = new ReviewDTO(revEntity);
+			return ResponseEntity.ok().body(revDTO);
+		} else {
+			return ResponseEntity.ok().body(null);
+		}
+	}
+	
+	@PostMapping("/modifyReview")
+	public ResponseEntity<?> modifyReview(@RequestBody ReviewDTO reviewDTO) {
+		ReviewEntity entity = service.selectOne(reviewDTO.getRevNum());
+		entity.setRevContent(reviewDTO.getRevContent());
+		entity.setRevRate(reviewDTO.getRevRate());
+		entity.setRevDate(Timestamp.valueOf(LocalDateTime.now()));
+		service.create(entity);
+		
+        //classRate update
+		ClassEntity classEntity = classService.selectOne(reviewDTO.getClassNum());
+        List<ReviewEntity> allReviews = service.selectByClassRef(classEntity);
+        double rateSum = 0;
+        for(ReviewEntity review: allReviews) {
+        	rateSum =+ review.getRevRate();
+        }
+        double newRate = (int)(rateSum / allReviews.size() * 100) / 100.0;
+        classEntity.setClassRate(newRate);
+        classService.create(classEntity);
+
+		ReviewDTO dto = new ReviewDTO(entity);
+		return ResponseEntity.ok().body(dto);
 	}
 
 }

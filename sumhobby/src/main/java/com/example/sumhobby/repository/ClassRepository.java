@@ -23,9 +23,9 @@ public interface ClassRepository extends JpaRepository<ClassEntity, Integer> {
 	@Query("SELECT DISTINCT c.classCategory FROM ClassEntity c")
     List<String> findAllCategories();
 	
-	@Query("SELECT c FROM ClassEntity c WHERE c.className = :className")
-	ClassEntity findByClassName(@Param("className") String className);
-	
 	List<ClassEntity> findByUserRef(UserEntity userEntity);
+	
+	@Query("SELECT c FROM ClassEntity c WHERE c.className like %:search%")
+	List<ClassEntity> findBySearchKey(@Param("search") String searchKey);
 	
 }
