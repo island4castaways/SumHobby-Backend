@@ -37,17 +37,30 @@ public class ReviewController {
 	
 	@PostMapping("/addreview")
 	public ResponseEntity<?> createReview(@RequestBody ReviewDTO reviewDTO) {
+		ClassEntity classEntity = classService.selectOne(reviewDTO.getClassNum());
+		
+		//review create
 		ReviewEntity entity = ReviewEntity.builder()
 				.revContent(reviewDTO.getRevContent())
 				.revDate(Timestamp.valueOf(LocalDateTime.now()))
 				.revRate(reviewDTO.getRevRate())
-				.classRef(classService.selectOne(reviewDTO.getClassNum()))
+				.classRef(classEntity)
 				.userRef(userService.selectOneByUserId(reviewDTO.getUserId()))
 				.build();
-//		reviewDTO.setClassNum(classService.create(reviewDTO.getClassName()).getClassNum());
-		
         ReviewEntity createdReview = service.create(entity);
-        List<ReviewEntity> entities = service.selectByClassRef(classService.selectOne(reviewDTO.getClassNum()));
+        
+        //classRate update
+        List<ReviewEntity> allReviews = service.selectByClassRef(classEntity);
+        double rateSum = 0;
+        for(ReviewEntity review: allReviews) {
+        	rateSum =+ review.getRevRate();
+        }
+        double newRate = (int)(rateSum / allReviews.size() * 100) / 100.0;
+        classEntity.setClassRate(newRate);
+        classService.create(classEntity);
+        
+        //review response retrieve
+        List<ReviewEntity> entities = service.selectByClassRef(classEntity);
         List<ReviewDTO> createdReviewDTO = entities.stream().map(ReviewDTO::new).collect(Collectors.toList());
 
         ResponseDTO<ReviewDTO> response = ResponseDTO.<ReviewDTO>builder().data(createdReviewDTO).build();
@@ -63,11 +76,6 @@ public class ReviewController {
 		List<ReviewEntity> entities = service.selectByClassRef(classEntity);
 
 		List<ReviewDTO> dtos = entities.stream().map(ReviewDTO::new).collect(Collectors.toList());
-
-//		        for(int i = 0 ;i < dtos.size();i++) {
-//		        	ClassDTO DTO = new ClassDTO(service.retrieve(dtos.get(i).getClassNum()));
-//		        	dtos.get(i).setClassName(classDTO.getClassName());
-//		        }
 
 		ResponseDTO<ReviewDTO> response = ResponseDTO.<ReviewDTO>builder().data(dtos).build();
 

@@ -20,6 +20,7 @@ public class PaymentDTO {
 	private Integer classPrice, classNum, paymentNum;
 	
 	public PaymentDTO(final PaymentEntity entity) {
+		this.orderId = entity.getOrderId();
 		this.userId = entity.getUserRef().getUserId();
 		this.classNum = entity.getClassRef().getClassNum();
 		this.className = entity.getClassRef().getClassName();

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.ReviewEntity;
+import com.example.sumhobby.entity.UserEntity;
 import com.example.sumhobby.repository.ClassRepository;
 import com.example.sumhobby.repository.ReviewRepository;
 
@@ -49,10 +50,9 @@ public class ClassService {
 
 	    return topRatedClassesByCategory;
 	}
+	
+	public List<ClassEntity> seletAllByUserRef(final UserEntity userEntity) {
+		return classRepository.findByUserRef(userEntity);
+	}
 
-//	public ClassEntity averageRevRate(final ReviewEntity entity) {
-//		
-//		List<ClassEntity> average = revRepository.findByRevRate();
-//		return average;
-//	}
 }

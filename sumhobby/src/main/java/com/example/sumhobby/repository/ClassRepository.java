@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.ReviewEntity;
+import com.example.sumhobby.entity.UserEntity;
 
 @Repository
 public interface ClassRepository extends JpaRepository<ClassEntity, Integer> {
@@ -25,5 +26,6 @@ public interface ClassRepository extends JpaRepository<ClassEntity, Integer> {
 	@Query("SELECT c FROM ClassEntity c WHERE c.className = :className")
 	ClassEntity findByClassName(@Param("className") String className);
 	
+	List<ClassEntity> findByUserRef(UserEntity userEntity);
 	
 }
