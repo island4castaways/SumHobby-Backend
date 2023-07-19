@@ -11,28 +11,37 @@ import com.example.sumhobby.repository.InquiryRepository;
 
 @Service
 public class InquiryService {
-	
+
 	@Autowired
 	private InquiryRepository inqRepository;
-	
+
 	public List<InquiryEntity> selectAll() {
 		return inqRepository.findAll();
 	}
-	
+
 	public InquiryEntity selectOne(final Integer inqNum) {
 		return inqRepository.findById(inqNum).get();
 	}
-	
+
 	public InquiryEntity create(final InquiryEntity entity) {
 		return inqRepository.save(entity);
 	}
-	
+
 	public void delete(final InquiryEntity entity) {
 		inqRepository.delete(entity);
 	}
+<<<<<<< HEAD
 	
 	public List<InquiryEntity> selectByUserRef(final UserEntity userEntity) {
 		return inqRepository.findByUserRef(userEntity);
 	}
 	
 }
+=======
+
+	public List<InquiryEntity> selectByUserRef(final UserEntity userEntity) {
+		return inqRepository.findByUserRef(userEntity);
+	}
+
+}
+>>>>>>> refs/remotes/origin/PYK

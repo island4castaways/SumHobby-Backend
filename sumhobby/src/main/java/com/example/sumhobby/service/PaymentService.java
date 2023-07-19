@@ -57,12 +57,17 @@ public class PaymentService {
 	}
 	
 	public Optional<ClassEntity> classRetrieve(int classNum){
-		
 		return classRepository.findById(classNum);
 	}
-
-	public List<PaymentEntity> selectByUserRef(final UserEntity userEntity) {
+	
+	public List<PaymentEntity> selectByUserRef(UserEntity userEntity) {
 		return paymentRepository.findByUserRef(userEntity);
 	}
-
+	
+	public List<ClassEntity> selectClassRefsByUserRef(UserEntity userEntity) {
+		return paymentRepository.findAllClassRefsByUserRef(userEntity);
+	}
+	public PaymentEntity selectByClassRefAndUserRef(ClassEntity classEntity, UserEntity userEntity) {
+		return paymentRepository.findByClassRefAndUserRef(classEntity, userEntity);
+	}
 }

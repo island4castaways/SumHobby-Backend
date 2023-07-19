@@ -55,14 +55,17 @@ public class UserController {
 	@Autowired
 	private PaymentService paymentService;
 	
+
+	private PasswordEncoder pwEncoder = new BCryptPasswordEncoder();
+
+	@Autowired
+	private ClassService classService;
+	
 	@Autowired
 	private InquiryService inqService;
 
-
-	private PasswordEncoder pwEncoder = new BCryptPasswordEncoder();
-	
 	@Autowired
-	private ClassService classService;
+	private PaymentService payService;
 
 	// userToken으로 userEntity 반환
 	@GetMapping("/returnUser")
@@ -129,8 +132,7 @@ public class UserController {
 	}
 
 	@PutMapping("/modifypw")
-	public ResponseEntity<?> modifyPw(@AuthenticationPrincipal String userTk,
-			@RequestBody PasswordDTO password) {
+	public ResponseEntity<?> modifyPw(@AuthenticationPrincipal String userTk, @RequestBody PasswordDTO password) {
 		System.out.println(userTk);
 		System.out.println(password.toString());
 		try {
@@ -179,7 +181,7 @@ public class UserController {
 			return ResponseEntity.ok().body(response);
 		}
 	}
-	
+
 	@PutMapping("/changeRole")
 	public ResponseEntity<?> changeRole(@RequestBody UserDTO userDTO) {
 		UserEntity entity = userService.selectOne(userDTO.getUserTk());
@@ -188,37 +190,43 @@ public class UserController {
 		UserDTO dto = new UserDTO(entity);
 		return ResponseEntity.ok().body(dto);
 	}
-	
+
 	@PatchMapping("/classes")
 	public ResponseEntity<?> getClasses(@RequestBody UserDTO userDTO) {
 		UserEntity userEntity = userService.selectOne(userDTO.getUserTk());
 		List<ClassEntity> entities = classService.seletAllByUserRef(userEntity);
 		List<ClassDTO> dtos = entities.stream().map(ClassDTO::new).collect(Collectors.toList());
-		ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder()
-				.data(dtos).build();
+		ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder().data(dtos).build();
 		return ResponseEntity.ok().body(response);
 	}
-	
+
+	@PatchMapping("/payments")
+	public ResponseEntity<?> getPayments(@RequestBody UserDTO userDTO) {
+		UserEntity userEntity = userService.selectOne(userDTO.getUserTk());
+		List<PaymentEntity> entities = payService.selectByUserRef(userEntity);
+		List<PaymentDTO> dtos = entities.stream().map(PaymentDTO::new).collect(Collectors.toList());
+		ResponseDTO<PaymentDTO> response = ResponseDTO.<PaymentDTO>builder().data(dtos).build();
+		return ResponseEntity.ok().body(response);
+	}
+
 	@PostMapping("/inquiry")
 	public ResponseEntity<?> createInquiry(@RequestBody InquiryDTO inquiryDTO) {
-	    try {
-	        String inqContent = inquiryDTO.getInqContent();
-	        
-	        InquiryEntity entity = InquiryEntity.builder()
-	                .inqContent(inqContent)
-	                .inqDate(Timestamp.valueOf(LocalDateTime.now()))
-	                .userRef(userService.selectOneByUserId(inquiryDTO.getUserId()))
-	                .build();
+		try {
+			String inqContent = inquiryDTO.getInqContent();
 
-	        inqService.create(entity);
+			InquiryEntity entity = InquiryEntity.builder().inqContent(inqContent)
+					.inqDate(Timestamp.valueOf(LocalDateTime.now()))
+					.userRef(userService.selectOneByUserId(inquiryDTO.getUserId())).build();
 
-	        UserEntity userEntity = userService.selectOneByUserId(inquiryDTO.getUserId());
-	        return getInquiry(new UserDTO(userEntity));
-	    } catch (Exception e) {
-	        String msg = e.getMessage();
-	        ResponseDTO<InquiryDTO> response = ResponseDTO.<InquiryDTO>builder().error(msg).build();
-	        return ResponseEntity.badRequest().body(response);
-	    }
+			inqService.create(entity);
+
+			UserEntity userEntity = userService.selectOneByUserId(inquiryDTO.getUserId());
+			return getInquiry(new UserDTO(userEntity));
+		} catch (Exception e) {
+			String msg = e.getMessage();
+			ResponseDTO<InquiryDTO> response = ResponseDTO.<InquiryDTO>builder().error(msg).build();
+			return ResponseEntity.badRequest().body(response);
+		}
 	}
 
 	@PatchMapping("/inquiry")
@@ -226,11 +234,10 @@ public class UserController {
 		UserEntity userEntity = userService.selectOneByUserId(userDTO.getUserId());
 		List<InquiryEntity> entities = inqService.selectByUserRef(userEntity);
 		List<InquiryDTO> dtos = entities.stream().map(InquiryDTO::new).collect(Collectors.toList());
-		ResponseDTO<InquiryDTO> response = ResponseDTO.<InquiryDTO>builder()
-				.data(dtos).build();
+		ResponseDTO<InquiryDTO> response = ResponseDTO.<InquiryDTO>builder().data(dtos).build();
 		return ResponseEntity.ok().body(response);
 	}
-
+	
 	// 결제리스트 부분
 	@PatchMapping("/pay")
 	public ResponseEntity<?> getpay(@RequestBody UserDTO userDTO) {
