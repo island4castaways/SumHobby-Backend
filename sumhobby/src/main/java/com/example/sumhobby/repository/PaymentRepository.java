@@ -18,5 +18,7 @@ public interface PaymentRepository extends JpaRepository<PaymentEntity, Integer>
 	
 	@Query("SELECT p.classRef FROM PaymentEntity p WHERE p.userRef = :userEntity")
 	List<ClassEntity> findAllClassRefsByUserRef(@Param("userEntity") UserEntity userEntity);
+	
+	PaymentEntity findByClassRefAndUserRef(ClassEntity classEntity, UserEntity userEntity);
 }
 

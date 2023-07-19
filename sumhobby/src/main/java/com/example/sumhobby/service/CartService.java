@@ -46,16 +46,23 @@ public class CartService {
 	}
 	
 	public CartEntity toEntity(CartDTO cartDTO) {
+//		if(cartDTO.getCartNum() == 0) {
+//			selectByClassRefAndUserRef(classRepository.findById(cartDTO.getClassNum()).get(), userRepository.findById(cartDTO.getUserTk()).get());
+//		}
 		return CartDTO.toEntity(cartDTO, classRepository, userRepository);
 	}
 	
 	public UserEntity userRetrieve(String userTK){
-		
 		return userRepository.findById(userTK).get();
 	}
 	
 	public CartEntity selectByClassRefAndUserRef(ClassEntity classEntity, UserEntity userEntity) {
 		return cartRepository.findByClassRefAndUserRef(classEntity, userEntity);
+	}
+	
+	public List<CartEntity> create(final CartEntity entity){
+		cartRepository.save(entity);
+		return retrieve(entity.getUserRef().getUserTk());
 	}
 	
 }

@@ -68,4 +68,7 @@ public class PaymentService {
 		return paymentRepository.findAllClassRefsByUserRef(userEntity);
 	}
 
+	public PaymentEntity selectByClassRefAndUserRef(ClassEntity classEntity, UserEntity userEntity) {
+		return paymentRepository.findByClassRefAndUserRef(classEntity, userEntity);
+	}
 }
