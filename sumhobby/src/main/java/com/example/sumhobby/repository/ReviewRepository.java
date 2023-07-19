@@ -21,5 +21,5 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Integer> {
 	
 	List<ReviewEntity> findByClassRef(ClassEntity classEntity);
 	
-	boolean existsByUserRefAndClassRef(UserEntity userRef, ClassEntity classRef);
+	ReviewEntity findByUserRefAndClassRef(UserEntity userRef, ClassEntity classRef);
 }

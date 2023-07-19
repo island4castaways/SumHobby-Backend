@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.sumhobby.dto.CartDTO;
 import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.dto.ResponseDTO;
+import com.example.sumhobby.dto.SearchDTO;
 import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.PaymentEntity;
 import com.example.sumhobby.entity.UserEntity;
@@ -37,21 +38,28 @@ public class ClassController {
 	private PaymentService payService;
 
 	@GetMapping("/category")
-	public ResponseEntity<?> retrieve(@AuthenticationPrincipal String userTk) {
+	public ResponseEntity<?> retrieve() {
+		List<ClassEntity> entities = classService.retrieve();
+		List<ClassDTO> dtos = entities.stream().map(ClassDTO::new).collect(Collectors.toList());
+		ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder().data(dtos).build();
+		return ResponseEntity.ok().body(response);
+	}
+	
+	@GetMapping("/myclasses")
+	public ResponseEntity<?> getMyClasses(@AuthenticationPrincipal String userTk) {
 		UserEntity userEntity = userService.selectOne(userTk);
 		List<ClassEntity> entities = payService.selectClassRefsByUserRef(userEntity);
 		List<ClassDTO> dtos = entities.stream().map(ClassDTO::new).collect(Collectors.toList());
 		ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder().data(dtos).build();
-		return ResponseEntity.ok().body(response);
+		return ResponseEntity.ok().body(response);		
 	}
 
 	@GetMapping("/top-rated")
 	public ResponseEntity<?> getTopRatedClassesByCategory() {
 
-		List<ClassEntity> topRatedClasses = classService.getTopRatedClassesByCategory();
+		List<ClassEntity> topRatedClasses = classService.getTop5RatedClassesByCategory();
 
 		List<ClassDTO> dtos = topRatedClasses.stream().map(ClassDTO::new).collect(Collectors.toList());
-//		List<ClassDTO> topRatedClasses = classService.getTopRatedClassesByCategory();
 
 		ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder().data(dtos).build();
 
@@ -64,6 +72,15 @@ public class ClassController {
 		ClassEntity entity = classService.selectOne(classDTO.getClassNum());
 		ClassDTO dto = new ClassDTO(entity);
 		return ResponseEntity.ok().body(dto);
+	}
+	
+	@PatchMapping("/search")
+	public ResponseEntity<?> searchClasses(@RequestBody SearchDTO searchDTO) {
+		List<ClassEntity> entities = classService.selectBySearchKey(searchDTO.getSearchKey());
+		List<ClassDTO> dtos = entities.stream().map(ClassDTO::new).collect(Collectors.toList());
+		ResponseDTO<ClassDTO> response = ResponseDTO.<ClassDTO>builder()
+				.data(dtos).build();
+		return ResponseEntity.ok().body(response);
 	}
 	
 }
