@@ -30,18 +30,9 @@ public class InquiryService {
 	public void delete(final InquiryEntity entity) {
 		inqRepository.delete(entity);
 	}
-<<<<<<< HEAD
 	
 	public List<InquiryEntity> selectByUserRef(final UserEntity userEntity) {
 		return inqRepository.findByUserRef(userEntity);
 	}
 	
 }
-=======
-
-	public List<InquiryEntity> selectByUserRef(final UserEntity userEntity) {
-		return inqRepository.findByUserRef(userEntity);
-	}
-
-}
->>>>>>> refs/remotes/origin/PYK
