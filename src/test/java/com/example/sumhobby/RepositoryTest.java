@@ -2,8 +2,6 @@ package com.example.sumhobby;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
@@ -12,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.example.sumhobby.dto.ClassDTO;
 import com.example.sumhobby.entity.ClassEntity;
 import com.example.sumhobby.entity.InquiryEntity;
 import com.example.sumhobby.entity.LectureEntity;
@@ -25,11 +22,7 @@ import com.example.sumhobby.repository.LectureRepository;
 import com.example.sumhobby.repository.PaymentRepository;
 import com.example.sumhobby.repository.ReviewRepository;
 import com.example.sumhobby.repository.UserRepository;
-import com.example.sumhobby.service.UserService;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @SpringBootTest
 public class RepositoryTest {
 	
