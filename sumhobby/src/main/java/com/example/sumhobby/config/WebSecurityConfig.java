@@ -31,7 +31,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeRequests()
-				.antMatchers("/", "/auth/**", "/admin/signin", "/class/top-rated", "/class", "/lecture").permitAll()
+				.antMatchers(
+						"/", "/auth/**", "/admin/signin", 
+						"/class/top-rated", "/class/**", 
+						"/lecture", "/cart", "/checkout", 
+						"/review/showreview", "/review/checkReview"
+						).permitAll()
 				.anyRequest().authenticated();
 		
 		//filter �벑濡�, 留� �슂泥�留덈떎 CorsFilter �떎�뻾�븳 �썑 jwtAuthenticationFilter �떎�뻾�븿
