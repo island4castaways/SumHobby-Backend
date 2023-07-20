@@ -32,7 +32,6 @@ public class ReviewEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer revNum;
 	
-	//º°Á¡
 	@Column(nullable = false)
 	private double revRate;
 
