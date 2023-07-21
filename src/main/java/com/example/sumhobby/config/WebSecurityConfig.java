@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/", "/auth/**", "/admin/signin", 
 						"/class/top-rated", "/class/**", 
 						"/lecture", "/cart", "/checkout", 
-						"/review/showreview", "/review/checkReview"
+						"/review/showreview", "/review/checkReview", "/checkout/success", "/checkout/fail"
 						).permitAll()
 				.anyRequest().authenticated();
 		
