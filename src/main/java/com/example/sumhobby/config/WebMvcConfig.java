@@ -12,7 +12,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
 		.allowedOrigins("http://localhost:3000",
-				"http://sumhobby-frontend2-env.eba-awrmpsam.ap-northeast-2.elasticbeanstalk.com/")
+				"http://sumhobby-frontend2-env.eba-awrmpsam.ap-northeast-2.elasticbeanstalk.com",
+				"https://app.sumhobby.com")
 		.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 		.allowedHeaders("*")
 		.allowCredentials(true)
