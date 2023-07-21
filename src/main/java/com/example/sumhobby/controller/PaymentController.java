@@ -132,7 +132,7 @@ public class PaymentController {
 //        HttpResponse<String> response = HttpClient.newHttpClient().send(, HttpResponse.BodyHandlers.ofString());
         
 		RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("http://localhost:3000/success?amount=" + amount+"&orderId=" + orderId+"&paymentKey="+paymentKey);
+        redirectView.setUrl("https://app.sumhobby.com/success?amount=" + amount+"&orderId=" + orderId+"&paymentKey="+paymentKey);
         return redirectView;
         
     }
